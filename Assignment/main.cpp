@@ -8,8 +8,9 @@ float oLeft = -10, oRight = 10, oBottom = -10, oTop = 10, oNear = -10, oFar = 10
 float ptx = 0, pty = 0, ptz = 0, pspeed = 0.1;
 float p_rotate_angle = 0, p_angle_speed = 10;
 float zoom = 1.0f, zoom_speed = 0.1f;
-float left_leg_angle = 0, right_leg_angle = 0, maximum_leg_angle = 35, minimum_leg_angle = -25, leg_angle_speed = 1;
-
+float left_leg_angle = 0, right_leg_angle = 0, maximum_leg_angle = 25, minimum_leg_angle = -25, leg_angle_speed = 2, leg_direction = 1;
+int character_facing_angle = 0, character_rotation_speed = 90;
+float mx = 0, my = 0, mz = 0, mspeed = 0.1; //movement
 
 LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -47,20 +48,45 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		}
 		//character movement
 		else if (wParam == 'W') {
-			if (true)
+			if (mz > oNear + 1)
 			{
-
+				mz -= mspeed;
+				left_leg_angle += (leg_angle_speed * leg_direction);
+				if (left_leg_angle >= maximum_leg_angle) {
+					left_leg_angle = maximum_leg_angle;
+					leg_direction = -1;
+				}
+				else if (left_leg_angle <= minimum_leg_angle) {
+					left_leg_angle = minimum_leg_angle;
+					leg_direction = 1;
+				}
+				right_leg_angle = -left_leg_angle;
 			}
 		}
 		else if (wParam == 'S') {
-
+			if (mz < oFar - 1)
+			{
+				mz += mspeed;
+				left_leg_angle += (leg_angle_speed * leg_direction);
+				if (left_leg_angle >= maximum_leg_angle) {
+					left_leg_angle = maximum_leg_angle;
+					leg_direction = -1;
+				}
+				else if (left_leg_angle <= minimum_leg_angle) {
+					left_leg_angle = minimum_leg_angle;
+					leg_direction = 1;
+				}
+				right_leg_angle = -left_leg_angle;
+			}
 		}
 		// character face directon
 		else if (wParam == 'A') {
-
+			character_facing_angle += character_rotation_speed;
+			character_facing_angle == 360 ? character_facing_angle = 0 : character_facing_angle;
 		}
 		else if (wParam == 'D') {
-		
+			character_facing_angle -= character_rotation_speed;
+			character_facing_angle == -360 ? character_facing_angle = 0 : character_facing_angle;
 		}
 		break;
 
@@ -396,13 +422,25 @@ void display()
 
 
 	//glTranslatef(-2.5, -2.5, 0);
-	//glLoadIdentity();
-	glRotatef(0.01, 0, 1, 0);
+	glLoadIdentity();
+	glRotatef(90, 0, 1, 0);
 	
+	//Character Facing Direction
+	glPushMatrix();
+	glRotatef(character_facing_angle, 0, 1, 0);
+
+	//Character Movement
+	glPushMatrix();
+	glTranslatef(mx, my, mz);
+	
+	// Upper Body
+
 	// Lower Body, (Scale based on upper)
 	glPushMatrix();
 	glScalef(1.35, 1.0, 0.8);
 	lowerBody();
+	glPopMatrix();
+	glPopMatrix();
 	glPopMatrix();
 }
 //--------------------------------------------------------------------
