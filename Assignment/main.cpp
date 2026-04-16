@@ -130,6 +130,25 @@ bool initPixelFormat(HDC hdc)
 }
 //--------------------------------------------------------------------
 
+void cone(double base_Radius, double height) {
+	GLUquadricObj* cylinder = NULL;
+	cylinder = gluNewQuadric();
+	
+	gluCylinder(cylinder, base_Radius, 0, height, 20, 20);
+
+	gluDeleteQuadric(cylinder);
+}
+
+void disk(double intr, double outr) {
+	GLUquadricObj* disk = NULL;
+	disk = gluNewQuadric();
+
+	gluQuadricDrawStyle(disk, GLU_FILL);
+	gluDisk(disk, intr, outr, 50, 50);
+
+	gluDeleteQuadric(disk);
+}
+
 void cylinder(double base_Radius, double top_Radius, double height) {
 	GLUquadricObj* cylinder = NULL;
 	cylinder = gluNewQuadric();
@@ -148,6 +167,41 @@ void sphere(double radius) {
 	gluSphere(sphere, radius, 50, 50);
 
 	gluDeleteQuadric(sphere);
+}
+
+void pyramid() {
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glBegin(GL_TRIANGLES);
+
+	// Front face
+	glVertex3f(0.0f, 1.0f, 0.0f);   // Apex
+	glVertex3f(-0.5f, 0.0f, 0.5f);   // Bottom-left
+	glVertex3f(0.5f, 0.0f, 0.5f);   // Bottom-right
+
+	// Back face
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.5f, 0.0f, -0.5f);
+	glVertex3f(-0.5f, 0.0f, -0.5f);
+
+	// Left face
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(-0.5f, 0.0f, -0.5f);
+	glVertex3f(-0.5f, 0.0f, 0.5f);
+
+	// Right face
+	glVertex3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.5f, 0.0f, 0.5f);
+	glVertex3f(0.5f, 0.0f, -0.5f);
+
+	glEnd();
+
+	// Square base using GL_QUADS
+	glBegin(GL_QUADS);
+	glVertex3f(-0.5f, 0.0f, 0.5f);
+	glVertex3f(0.5f, 0.0f, 0.5f);
+	glVertex3f(0.5f, 0.0f, -0.5f);
+	glVertex3f(-0.5f, 0.0f, -0.5f);
+	glEnd();
 }
 
 void foot() {
@@ -399,6 +453,130 @@ void lowerBody() {
 	glPopMatrix();
 }
 
+void weapon() {
+	//Spear Blade
+	glPushMatrix();
+	glTranslatef(0, 4, 0.1);
+	
+	//Lower Blade
+	glColor3f(1, 1, 1);
+	glPushMatrix();
+	glRotatef(180, 1, 0, 0);
+	glScalef(1.5, 1.5, 0.2);
+	pyramid();
+	glPopMatrix();
+
+	//Upper Blade
+	glColor3f(1, 1, 1);
+	glPushMatrix();
+	glScalef(1.5, 3.25, 0.2);
+	pyramid();
+	glPopMatrix();
+	glPopMatrix();
+
+	//Ring blade between
+	glColor3f(1, 1, 1);
+	glPushMatrix();
+	glScalef(0.7, 0.7, 0.7);
+	glTranslatef(0, 2, 0);
+	glPushMatrix();
+	glTranslatef(0, 0, 0.1);
+	disk(1.35, 1.45);
+	glPopMatrix();
+	cylinder(1.45, 1.45, 0.2);
+	glPushMatrix();
+	glTranslatef(0, 0, 0.1);
+	disk(1.45, 1.65);
+	glPopMatrix();
+	glPopMatrix();
+
+	//Handle
+	glColor3f(1, 1, 1);
+	glPushMatrix();
+	glTranslatef(0, 3, 0.1);
+	glPushMatrix();
+	glRotatef(-90, 0, 0, 1);
+	glRotatef(90, 0, 1, 0);
+	cylinder(0.15, 0.15, 12);
+	glPopMatrix();
+	glPopMatrix();
+
+	glColor3f(0.65, 0.35, 0);
+	glPushMatrix();
+	glTranslatef(0, 3, 0.1);
+	glRotatef(-90, 0, 0, 1);
+	glRotatef(90, 0, 1, 0);
+	cylinder(0.2, 0.2, 3);
+	glPopMatrix();
+	
+	//Lower Handle Cover
+	glColor3f(1, 1, 1);
+	glPushMatrix();
+	glTranslatef(0, -9, 0.1);
+	sphere(0.2);
+	glPushMatrix();
+	glRotatef(-90, 0, 0, 1);
+	glRotatef(90, 0, 1, 0);
+	cone(0.15, 1);
+	glPopMatrix();
+	glPopMatrix();
+	
+	//Upper Handle Cover
+	glPushMatrix();
+	glTranslatef(0, 3, 0.1);
+	sphere(0.35);
+
+	// Left Blade
+	glPushMatrix();
+	glRotatef(90, 0, 1, 0);
+	cylinder(0.15, 0.15, 1);
+	glPushMatrix();
+	glTranslatef(0, 0, 1);
+	sphere(0.15);
+	
+	glPushMatrix();
+	glRotatef(-90, 1, 0, 0);
+	glTranslatef(0, -0.4, 0);
+	glScalef(0.1, 0.8, 0.5);
+	pyramid();
+	glPopMatrix();
+
+	glPushMatrix();
+	glRotatef(90, 1, 0, 0);
+	glTranslatef(0, 0.4, 0);
+	glScalef(0.1, 1.25, 0.5);
+	pyramid();
+	glPopMatrix();
+	glPopMatrix();
+	glPopMatrix();
+
+	//Right Blade
+	glPushMatrix();
+	glRotatef(-90, 0, 1, 0);
+	cylinder(0.15, 0.15, 1);
+	glPushMatrix();
+	glTranslatef(0, 0, 1);
+	sphere(0.15);
+
+	glPushMatrix();
+	glRotatef(-90, 1, 0, 0);
+	glTranslatef(0, -0.4, 0);
+	glScalef(0.1, 0.8, 0.5);
+	pyramid();
+	glPopMatrix();
+
+	glPushMatrix();
+	glRotatef(90, 1, 0, 0);
+	glTranslatef(0, 0.4, 0);
+	glScalef(0.1, 1.25, 0.5);
+	pyramid();
+	glPopMatrix();
+	glPopMatrix();
+	glPopMatrix();
+
+	glPopMatrix();
+}
+
 // Perspective
 void projection() {
 	glMatrixMode(GL_PROJECTION);
@@ -420,9 +598,15 @@ void display()
 
 	glMatrixMode(GL_MODELVIEW);
 
+	//Weapon
+	glTranslatef(3, 0, 0);
+	weapon();
 
-	//glTranslatef(-2.5, -2.5, 0);
+
 	glLoadIdentity();
+	//Character
+	//glTranslatef(-2.5, -2.5, 0);
+	glPushMatrix();
 	glRotatef(90, 0, 1, 0);
 	
 	//Character Facing Direction
@@ -439,6 +623,7 @@ void display()
 	glPushMatrix();
 	glScalef(1.35, 1.0, 0.8);
 	lowerBody();
+	glPopMatrix();
 	glPopMatrix();
 	glPopMatrix();
 	glPopMatrix();
