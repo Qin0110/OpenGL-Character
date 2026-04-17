@@ -4,6 +4,16 @@
 #include <math.h>
 
 #define WINDOW_TITLE "Assignment Character"
+#define MAX_DROPS 100
+
+struct Raindrop {
+	float x;
+	float y;
+	float speed;
+	float length;
+};
+
+Raindrop rain[MAX_DROPS];
 
 float oLeft = -10, oRight = 10, oBottom = -10, oTop = 10, oNear = -10, oFar = 10;
 float ptx = 0, pty = 0, ptz = 0, pspeed = 0.1;
@@ -328,6 +338,63 @@ bool initPixelFormat(HDC hdc)
 	}
 }
 //--------------------------------------------------------------------
+
+void initRain() {
+	for (int i = 0; i < MAX_DROPS; i++) {
+		// Random X position across the screen (-1.0 to 1.0)
+		rain[i].x = ((float)rand() / RAND_MAX) * 2.0f - 1.0f;
+	
+		// Random Y starting position above the screen (1.0 to 2.0)
+		// so they don't all appear at once
+		rain[i].y = 1.0f + ((float)rand() / RAND_MAX);
+	
+		// Random fall speed
+		rain[i].speed = 0.001f + ((float)rand() / RAND_MAX) * 0.007f;
+	
+		// Random drop length
+		rain[i].length = 0.001f + ((float)rand() / RAND_MAX) * 0.005f;
+	}
+}
+
+void drawRain() {
+	// Save current matrices
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0); // NDC-style 2D space
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	glDisable(GL_LIGHTING);  // rain shouldn't be lit
+	glDisable(GL_DEPTH_TEST); // draw on top of everything
+
+	glColor3f(1, 1, 1.0f); // light blue tint
+	glLineWidth(3);
+
+	for (int i = 0; i < MAX_DROPS; i++) {
+		glBegin(GL_LINE_STRIP);
+		glVertex2f(rain[i].x, rain[i].y);
+		glVertex2f(rain[i].x, rain[i].y - rain[i].length);
+		glEnd();
+
+		rain[i].y -= rain[i].speed;
+
+		if (rain[i].y < -1.0f) {
+			rain[i].y = 1.0f;
+			rain[i].x = ((float)rand() / RAND_MAX) * 2.0f - 1.0f;
+		}
+	}
+
+	// Restore matrices and state
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+
+	glEnable(GL_DEPTH_TEST);
+}
 
 GLuint loadTexture(LPCSTR filepath) {
 	GLUquadricObj* quadric = gluNewQuadric();
@@ -1808,6 +1875,7 @@ void display()
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 {
+	initRain();
 	WNDCLASSEX wc;
 	ZeroMemory(&wc, sizeof(WNDCLASSEX));
 
@@ -1858,7 +1926,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, int nCmdShow)
 		}
 
 		display();
-
+		drawRain();
 		SwapBuffers(hdc);
 	}
 
