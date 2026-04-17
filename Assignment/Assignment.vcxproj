@@ -19,6 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="circles+pattern+clothing-256x256.bmp" />
+    <Image Include="cloth+fiber+fabric-512x512.bmp" />
+    <Image Include="rose-gold-leather-textured-background.bmp" />
+    <Image Include="white+cloth+fabric-64x64.bmp" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

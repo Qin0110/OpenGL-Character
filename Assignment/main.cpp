@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include <gl/GL.h>
 #include <gl/GLU.h>
+#include <math.h>
 
 #define WINDOW_TITLE "Assignment Character"
 
@@ -113,7 +114,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		case 'P': isOrtho = false; tz = 0; break;
 
 			//character movement
-		case 'W':
+		case 'S':
 			if (mz > oNear + 1)
 			{
 				mz -= mspeed;
@@ -129,7 +130,7 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				right_leg_angle = -left_leg_angle;
 			}
 			break;
-		case 'S':
+		case 'W':
 			if (mz < oFar - 1)
 			{
 				mz += mspeed;
@@ -295,19 +296,42 @@ bool initPixelFormat(HDC hdc)
 }
 //--------------------------------------------------------------------
 
-void cone(double base_Radius, double height) {
-	GLUquadricObj* cylinder = NULL;
-	cylinder = gluNewQuadric();
-	
-	gluCylinder(cylinder, base_Radius, 0, height, 20, 20);
+GLuint loadTexture(LPCSTR filepath) {
+	GLUquadricObj* quadric = gluNewQuadric();
+	gluQuadricTexture(quadric, GL_TRUE);
+	gluQuadricNormals(quadric, GLU_SMOOTH);
 
-	gluDeleteQuadric(cylinder);
+	// Take from step 1
+	GLuint texture = 0;
+
+	// Initialize texture info
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+	HBITMAP hBMP = (HBITMAP)LoadImage(GetModuleHandle(NULL),
+		filepath, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION |
+		LR_LOADFROMFILE);
+	GetObject(hBMP, sizeof(BMP), &BMP);
+
+	glEnable(GL_TEXTURE_2D);
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+		GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+		GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, BMP.bmWidth,
+		BMP.bmHeight, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, BMP.bmBits);
+
+	// take from step 5
+	DeleteObject(hBMP);
+
+	return texture;
 }
 
 void disk(double intr, double outr) {
 	GLUquadricObj* disk = NULL;
 	disk = gluNewQuadric();
 
+	gluQuadricTexture(disk, GL_TRUE);
 	gluQuadricDrawStyle(disk, GLU_FILL);
 	gluDisk(disk, intr, outr, 50, 50);
 
@@ -318,8 +342,18 @@ void cylinder(double base_Radius, double top_Radius, double height) {
 	GLUquadricObj* cylinder = NULL;
 	cylinder = gluNewQuadric();
 
+	gluQuadricTexture(cylinder, GL_TRUE);
 	gluQuadricDrawStyle(cylinder, GLU_FILL);
 	gluCylinder(cylinder, base_Radius, top_Radius, height, 50, 50);
+
+	gluDeleteQuadric(cylinder);
+}
+
+void cone(double base_Radius, double height) {
+	GLUquadricObj* cylinder = NULL;
+	cylinder = gluNewQuadric();
+
+	gluCylinder(cylinder, base_Radius, 0, height, 20, 20);
 
 	gluDeleteQuadric(cylinder);
 }
@@ -328,6 +362,7 @@ void sphere(double radius) {
 	GLUquadricObj* sphere = NULL;
 	sphere = gluNewQuadric();
 
+	gluQuadricTexture(sphere, GL_TRUE);
 	gluQuadricDrawStyle(sphere, GLU_FILL);
 	gluSphere(sphere, radius, 50, 50);
 
@@ -542,15 +577,17 @@ void weapon() {
 
 
 void characterArm(int handIndex) {
+	GLuint textureArr[2];
 	GLUquadricObj* quadric = gluNewQuadric();
+	gluQuadricTexture(quadric, GL_TRUE);
 	gluQuadricDrawStyle(quadric, GLU_FILL);
 	float curl = (handIndex == 0) ? 1.0f : -1.0f;
 
 	glPushMatrix();
-
 		// shoulder joint
 		glTranslatef(0.105, 0.105, 0);
 		glRotatef(shoulderAngles[handIndex], 1.0f, 0.0f, 0.0f);
+		textureArr[0] = loadTexture("cloth+fiber+fabric-512x512.bmp");
 		glColor3f(0.9, 0.9, 0.95);
 		gluSphere(quadric, 0.15, 20, 20);
 		glRotatef(90.0, 1.0, 0.0, 0.0);
@@ -565,16 +602,15 @@ void characterArm(int handIndex) {
 		gluSphere(quadric, 0.12, 20, 20);
 		glRotatef(15.0f, 1.0f, 0.0f, 0.0f);
 		glRotatef(forearmAngles[handIndex], 1.0f, 0.0f, 0.0f);
+		
 		// forearm
 		glColor3f(0.15, 0.15, 0.15);
 		gluCylinder(quadric, 0.13, 0.10, 0.5, 30, 30);
 		glTranslatef(0.0, 0.0, 0.5);
-
-		//hand palm
-
-	
-		glRotatef(palmAngles[handIndex], 0.0f, 0.0f, 1.0f);
+		glDeleteTextures(1, &textureArr[0]);
 		
+		//hand palm
+		glRotatef(palmAngles[handIndex], 0.0f, 0.0f, 1.0f);
 		glColor3f(0.15, 0.15, 0.15);
 		gluSphere(quadric, 0.10, 30, 30);
 
@@ -584,7 +620,7 @@ void characterArm(int handIndex) {
 		glPushMatrix();
 			glScalef(1.15, 0.7, 1.1);
 			gluSphere(quadric, 0.10, 30, 30);
-		glPopMatrix();
+		glPopMatrix(); 
 
 	
 		glPushMatrix();
@@ -779,10 +815,8 @@ void characterArm(int handIndex) {
 }
 
 void face() {
-
 	// 1. 
 	glBegin(GL_QUADS);
-
 	// Bottom
 	glVertex3f(-0.15, 0.6, 0);
 	glVertex3f(0.15, 0.6, 0);
@@ -1075,13 +1109,15 @@ void hair() {
 }
 
 void character() {
+	GLuint textureArr[2];
 	GLUquadricObj* quadric = gluNewQuadric();
+	gluQuadricTexture(quadric, GL_TRUE);
 	gluQuadricDrawStyle(quadric, GLU_FILL);
 
 	glPushMatrix();
 
-
 	// upper body
+	textureArr[0] = loadTexture("circles+pattern+clothing-256x256.bmp");
 	glColor3f(0.9, 0.9, 0.95);
 	glPushMatrix();
 	glTranslatef(0.0, 0.0, 0.0);
@@ -1106,6 +1142,7 @@ void character() {
 	glScalef(1.0, 1.0, 0.65);
 	glRotatef(-90.0, 1.0, 0.0, 0.0);
 	gluCylinder(quadric, 0.43, 0.45, 0.4, 30, 10);
+	glDeleteTextures(1, &textureArr[0]);
 	glPopMatrix();
 
 	//------------------------------------------
@@ -1295,43 +1332,49 @@ void character() {
 }
 
 void foot() {
+	glColor3f(0, 0, 0);
 	glBegin(GL_QUADS);
 		// Up
-		glVertex3f(-0.5, -6, 0);
-		glVertex3f(-1.25, -6, 0);
-		glVertex3f(-1.25, -6, -1.5);
-		glVertex3f(-0.5, -6, -1.5);
+		glVertex3f(-0.5, -7, 0);
+		glVertex3f(-1.25, -7, 0);
+		glVertex3f(-1.25, -7, -1.5);
+		glVertex3f(-0.5, -7, -1.5);
 
 		// Front
-		glVertex3f(-0.5, -6, -1.5);
-		glVertex3f(-1.25, -6, -1.5);
-		glVertex3f(-1.25, -6.75, -2.5);
-		glVertex3f(-0.5, -6.75, -2.5);
+		glVertex3f(-0.5, -7, -1.5);
+		glVertex3f(-1.25, -7, -1.5);
+		glVertex3f(-1.25, -7.75, -1.5);
+		glVertex3f(-0.5, -7.75, -1.5);
 
 		// Right
-		glVertex3f(-0.5, -6.75, -2.5);
-		glVertex3f(-0.5, -6.75, 0);
-		glVertex3f(-0.5, -6, 0);
-		glVertex3f(-0.5, -6, -1.5);
+		glVertex3f(-0.5, -7.75, -1.5);
+		glVertex3f(-0.5, -7.75, 0);
+		glVertex3f(-0.5, -7, 0);
+		glVertex3f(-0.5, -7, -1.5);
 
 		// Bottom
-		glVertex3f(-0.5, -6.75, 0);
-		glVertex3f(-1.25, -6.75, 0);
-		glVertex3f(-1.25, -6.75, -2.5);
-		glVertex3f(-0.5, -6.75, -2.5);
+		glVertex3f(-0.5, -7.75, 0);
+		glVertex3f(-1.25, -7.75, 0);
+		glVertex3f(-1.25, -7.75, -1.5);
+		glVertex3f(-0.5, -7.75, -1.5);
 
 		// Left
-		glVertex3f(-1.25, -6.75, 0);
-		glVertex3f(-1.25, -6, 0);
-		glVertex3f(-1.25, -6, -1.5);
-		glVertex3f(-1.25, -6.75, -2.5);
+		glVertex3f(-1.25, -7.75, 0);
+		glVertex3f(-1.25, -7, 0);
+		glVertex3f(-1.25, -7, -1.5);
+		glVertex3f(-1.25, -7.75, -1.5);
 
 		// Back
-		glVertex3f(-1.25, -6, -1.5);
-		glVertex3f(-0.5, -6, -1.5);
-		glVertex3f(-0.5, -6.75, -2.5);
-		glVertex3f(-1.25, -6.75, -2.5);
+		glVertex3f(-1.25, -7, -1.5);
+		glVertex3f(-0.5, -7, -1.5);
+		glVertex3f(-0.5, -7.75, -1.5);
+		glVertex3f(-1.25, -7.75, -1.5);
 	glEnd();
+	glPushMatrix();
+	glTranslatef(-0.85, -7.4, -1.4);
+	glScalef(1, 1, 4);
+	sphere(0.36);
+	glPopMatrix();
 }
 
 void leg() {
@@ -1463,42 +1506,83 @@ void leg() {
 	glPushMatrix();
 	glBegin(GL_QUADS);
 		// Up
-		glVertex3f(-1.25, -3.75, -1.5);
-		glVertex3f(-0.5, -3.75, -1.5);
-		glVertex3f(-0.5, -3.75, 0);
-		glVertex3f(-1.25, -3.75, 0);
+		glVertex3f(-1.25, -3.9, -1.5);
+		glVertex3f(-0.5, -3.9, -1.5);
+		glVertex3f(-0.5, -3.9, 0);
+		glVertex3f(-1.25, -3.9, 0);
 
 		// Left
 		glVertex3f(-1.25, -3.9, 0);
-		glVertex3f(-1.25, -6, 0);
-		glVertex3f(-1.25, -6, -1.5);
+		glVertex3f(-1.25, -5, 0);
+		glVertex3f(-1.25, -5, -1.5);
 		glVertex3f(-1.25, -3.9, -1.5);
 
 		// Back
 		glVertex3f(-1.25, -3.9, -1.5);
-		glVertex3f(-1.25, -6, -1.5);
-		glVertex3f(-0.5, -6, -1.5);
+		glVertex3f(-1.25, -5, -1.5);
+		glVertex3f(-0.5, -5, -1.5);
 		glVertex3f(-0.5, -3.9, -1.5);
 
 		// Right
 		glVertex3f(-0.5, -3.9, -1.5);
-		glVertex3f(-0.5, -6, -1.5);
-		glVertex3f(-0.5, -6, 0);
+		glVertex3f(-0.5, -5, -1.5);
+		glVertex3f(-0.5, -5, 0);
 		glVertex3f(-0.5, -3.9, 0);
 
 		// Front
 		glVertex3f(-0.5, -3.9, 0);
 		glVertex3f(-1.25, -3.9, 0);
-		glVertex3f(-1.25, -6, 0);
-		glVertex3f(-0.5, -6, 0);
+		glVertex3f(-1.25, -5, 0);
+		glVertex3f(-0.5, -5, 0);
 
 		// Bottom
-		glVertex3f(-0.5, -6, 0);
-		glVertex3f(-1.25, -6, 0);
-		glVertex3f(-1.25, -6, -1.5);
-		glVertex3f(-0.5, -6, -1.5);
-
+		glVertex3f(-0.5, -5, 0);
+		glVertex3f(-1.25, -5, 0);
+		glVertex3f(-1.25, -5, -1.5);
+		glVertex3f(-0.5, -5, -1.5);
 	glEnd();
+	glPopMatrix();
+
+
+	glPushMatrix();
+	glColor3f(0.95, 0.8, 0.7);
+		glBegin(GL_QUADS);
+		// Up
+		glVertex3f(-1.25, -5, -1.5);
+		glVertex3f(-0.5, -5, -1.5);
+		glVertex3f(-0.5, -5, 0);
+		glVertex3f(-1.25, -5, 0);
+
+		// Left
+		glVertex3f(-1.25, -5, 0);
+		glVertex3f(-0.65, -7, 0);
+		glVertex3f(-0.65, -7, -1.5);
+		glVertex3f(-1.25, -5, -1.5);
+
+		// Back
+		glVertex3f(-1.25, -5, -1.5);
+		glVertex3f(-1.15, -7, -1.5);
+		glVertex3f(-0.65, -7, -1.5);
+		glVertex3f(-0.5, -5, -1.5);
+
+		// Right
+		glVertex3f(-0.5, -5, -1.5);
+		glVertex3f(-0.65, -7, -1.5);
+		glVertex3f(-0.65, -7, 0);
+		glVertex3f(-0.5, -5, 0);
+
+		// Front
+		glVertex3f(-0.5, -5, 0);
+		glVertex3f(-1.25, -5, 0);
+		glVertex3f(-1.15, -7, 0);
+		glVertex3f(-0.65, -7, 0);
+
+		// Bottom
+		glVertex3f(-0.65, -7, 0);
+		glVertex3f(-1.15, -7, 0);
+		glVertex3f(-1.15, -7, -1.5);
+		glVertex3f(-0.65, -7, -1.5);
+		glEnd();
 	glPopMatrix();
 
 	glPopMatrix();
@@ -1642,6 +1726,7 @@ void display()
 	//Character
 	//glTranslatef(-2.5, -2.5, 0);
 	glPushMatrix();
+	glTranslatef(0, 1, 0);
 
 	//Character Facing Direction
 	glPushMatrix();

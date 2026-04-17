@@ -15,6 +15,20 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="white+cloth+fabric-64x64.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="cloth+fiber+fabric-512x512.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="circles+pattern+clothing-256x256.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="rose-gold-leather-textured-background.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
