@@ -13,10 +13,14 @@ float left_leg_angle = 0, right_leg_angle = 0, maximum_leg_angle = 25, minimum_l
 int character_facing_angle = 0, character_rotation_speed = 90, target_facing_angle= 0;
 float mx = 0, my = 0, mz = 0, mspeed = 0.1; //movement
 
+//Light
+bool lightOn = TRUE;
+bool textureOn = TRUE;
 
 //perspective
 float tz = 0.0;
 float tSpeed = 0.5;
+float prx = 0, pry = 0, prz = 0, prspeed = 10;
 bool isOrtho = true;
 
 //texture mapping
@@ -251,6 +255,35 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 			}
 			break;
 
+		//Lighting switch
+		case VK_F1:
+			lightOn = !lightOn;
+			break;
+
+		case VK_F2:
+			textureOn = !textureOn;
+			break;
+
+		//Camera viewing angle
+		case '8':
+			prx += prspeed;
+			break;
+		case '9':
+			pry += prspeed;
+			break;
+		case '0':
+			prz += prspeed;
+			break;
+
+		// reset all
+		case VK_SPACE:
+			pty = 0, ptx = 0, ptz = 0;
+			prx = 0, pry = 0, prz = 0;
+			character_facing_angle = 0;
+			target_facing_angle = 0;
+			mx = 0, my = 0, mz = 0;
+			left_leg_angle = 0, right_leg_angle = 0;
+			break;
 		default:
 			break;
 		}
@@ -311,7 +344,14 @@ GLuint loadTexture(LPCSTR filepath) {
 		LR_LOADFROMFILE);
 	GetObject(hBMP, sizeof(BMP), &BMP);
 
-	glEnable(GL_TEXTURE_2D);
+	if (textureOn)
+	{
+		glEnable(GL_TEXTURE_2D);
+	}
+	else {
+		glDisable(GL_TEXTURE_2D);
+	}
+	
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
@@ -1683,6 +1723,9 @@ void projection() {
 	glLoadIdentity();
 
 	glTranslatef(ptx, pty, ptz);
+	glRotatef(prx, 1, 0, 0);
+	glRotatef(pry, 0, 1, 0);
+	glRotatef(prz, 0, 0, 1);
 
 	if (isOrtho) {
 		glOrtho(oLeft * zoom, oRight * zoom, oBottom * zoom, oTop * zoom, oNear * zoom, oFar * zoom);
@@ -1698,7 +1741,15 @@ void display()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_LIGHTING);
+	if (lightOn)
+	{
+		glEnable(GL_LIGHTING);
+	}
+	else
+	{
+		glDisable(GL_LIGHTING);
+	}
+
 	glEnable(GL_LIGHT0);
 	glEnable(GL_COLOR_MATERIAL);
 	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
