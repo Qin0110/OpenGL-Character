@@ -33,6 +33,9 @@
     <Image Include="metallic+stripes-64x64.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="ice+and+snow+ground-64x64.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

@@ -15,13 +15,13 @@ struct Raindrop {
 
 Raindrop rain[MAX_DROPS];
 
-float oLeft = -10, oRight = 10, oBottom = -10, oTop = 10, oNear = -10, oFar = 10;
+float oLeft = -10, oRight = 10, oBottom = -10, oTop = 10, oNear = -10, oFar = 20;
 float ptx = 0, pty = 0, ptz = 0, pspeed = 0.1;
 float p_rotate_angle = 0, p_angle_speed = 10;
 float zoom = 1.0f, zoom_speed = 0.1f;
 float left_leg_angle = 0, right_leg_angle = 0, maximum_leg_angle = 25, minimum_leg_angle = -25, leg_angle_speed = 2, leg_direction = 1;
 int character_facing_angle = 0, character_rotation_speed = 90, target_facing_angle= 0;
-float mx = 0, my = 0, mz = 0, mspeed = 0.1; //movement
+float mx = 0, my = 0, mz = 0, mspeed = 1; //movement
 bool armorOn = true;
 
 //Light
@@ -102,20 +102,38 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 		case '+':
 		case VK_OEM_PLUS:
-			if (zoom < 5.0f)
+			if (isOrtho)
 			{
-				zoom += zoom_speed;
+				if (zoom > 0.5f)
+				{
+					zoom -= zoom_speed;
+				}
 			}
-			tz += tSpeed; // zoom in
+			else
+			{
+				if (tz < 0)
+				{
+					tz += tSpeed; // zoom in
+				}
+			}
 			break;
 
 		case '-':
 		case VK_OEM_MINUS:
-			if (zoom > 0.2f)
+			if (isOrtho)
 			{
-				zoom -= zoom_speed;
+				if (zoom < 3.0f)
+				{
+					zoom += zoom_speed;
+				}
 			}
-			tz -= tSpeed; // zoom out
+			else
+			{
+				if (tz < 10)
+				{
+					tz -= tSpeed; // zoom out
+				}
+			}			
 			break;
 
 		case 'N':
@@ -130,35 +148,75 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 			//character movement
 		case 'S':
-			if (mz > oNear + 1)
+			if (isOrtho)
 			{
-				mz -= mspeed;
-				left_leg_angle += (leg_angle_speed * leg_direction);
-				if (left_leg_angle >= maximum_leg_angle) {
-					left_leg_angle = maximum_leg_angle;
-					leg_direction = -1;
+				if (mz > -(oFar - 3) / 2)
+				{
+					mz -= mspeed;
+					left_leg_angle += (leg_angle_speed * leg_direction);
+					if (left_leg_angle >= maximum_leg_angle) {
+						left_leg_angle = maximum_leg_angle;
+						leg_direction = -1;
+					}
+					else if (left_leg_angle <= minimum_leg_angle) {
+						left_leg_angle = minimum_leg_angle;
+						leg_direction = 1;
+					}
+					right_leg_angle = -left_leg_angle;
 				}
-				else if (left_leg_angle <= minimum_leg_angle) {
-					left_leg_angle = minimum_leg_angle;
-					leg_direction = 1;
+			}
+			else
+			{
+				if (mz > -90)
+				{
+					mz -= mspeed;
+					left_leg_angle += (leg_angle_speed * leg_direction);
+					if (left_leg_angle >= maximum_leg_angle) {
+						left_leg_angle = maximum_leg_angle;
+						leg_direction = -1;
+					}
+					else if (left_leg_angle <= minimum_leg_angle) {
+						left_leg_angle = minimum_leg_angle;
+						leg_direction = 1;
+					}
+					right_leg_angle = -left_leg_angle;
 				}
-				right_leg_angle = -left_leg_angle;
 			}
 			break;
 		case 'W':
-			if (mz < oFar - 1)
+			if (isOrtho)
 			{
-				mz += mspeed;
-				left_leg_angle += (leg_angle_speed * leg_direction);
-				if (left_leg_angle >= maximum_leg_angle) {
-					left_leg_angle = maximum_leg_angle;
-					leg_direction = -1;
+				if (mz < -(oNear + 3))
+				{
+					mz += mspeed;
+					left_leg_angle += (leg_angle_speed * leg_direction);
+					if (left_leg_angle >= maximum_leg_angle) {
+						left_leg_angle = maximum_leg_angle;
+						leg_direction = -1;
+					}
+					else if (left_leg_angle <= minimum_leg_angle) {
+						left_leg_angle = minimum_leg_angle;
+						leg_direction = 1;
+					}
+					right_leg_angle = -left_leg_angle;
 				}
-				else if (left_leg_angle <= minimum_leg_angle) {
-					left_leg_angle = minimum_leg_angle;
-					leg_direction = 1;
+			}
+			else
+			{
+				if (mz < 1)
+				{
+					mz += mspeed;
+					left_leg_angle += (leg_angle_speed * leg_direction);
+					if (left_leg_angle >= maximum_leg_angle) {
+						left_leg_angle = maximum_leg_angle;
+						leg_direction = -1;
+					}
+					else if (left_leg_angle <= minimum_leg_angle) {
+						left_leg_angle = minimum_leg_angle;
+						leg_direction = 1;
+					}
+					right_leg_angle = -left_leg_angle;
 				}
-				right_leg_angle = -left_leg_angle;
 			}
 			break;
 
@@ -486,23 +544,35 @@ void pyramid() {
 	glBegin(GL_TRIANGLES);
 
 	// Front face
+	glTexCoord2d(0, 1);
 	glVertex3f(0.0f, 1.0f, 0.0f);   // Apex
+	glTexCoord2d(0, 0);
 	glVertex3f(-0.5f, 0.0f, 0.5f);   // Bottom-left
+	glTexCoord2d(1, 1);
 	glVertex3f(0.5f, 0.0f, 0.5f);   // Bottom-right
 
 	// Back face
+	glTexCoord2d(0, 1);
 	glVertex3f(0.0f, 1.0f, 0.0f);
+	glTexCoord2d(0, 0);
 	glVertex3f(0.5f, 0.0f, -0.5f);
+	glTexCoord2d(1, 1);
 	glVertex3f(-0.5f, 0.0f, -0.5f);
 
 	// Left face
+	glTexCoord2d(0, 1);
 	glVertex3f(0.0f, 1.0f, 0.0f);
+	glTexCoord2d(0, 0);
 	glVertex3f(-0.5f, 0.0f, -0.5f);
+	glTexCoord2d(1, 1);
 	glVertex3f(-0.5f, 0.0f, 0.5f);
 
 	// Right face
+	glTexCoord2d(0, 1);
 	glVertex3f(0.0f, 1.0f, 0.0f);
+	glTexCoord2d(0, 0);
 	glVertex3f(0.5f, 0.0f, 0.5f);
+	glTexCoord2d(1, 1);
 	glVertex3f(0.5f, 0.0f, -0.5f);
 
 	glEnd();
@@ -569,24 +639,30 @@ void drawBox(double w, double h, double d) {
 
 void weapon() {
 	GLuint handleTexture = 0;
+	GLuint bladeTexture = 0;
+	GLuint jointTexture = 0;
 
 	//Spear Blade
 	glPushMatrix();
 	glTranslatef(0, 4, 0.1);
 
 	//Lower Blade
+	bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
 	glColor3f(1, 1, 1);
 	glPushMatrix();
 	glRotatef(180, 1, 0, 0);
 	glScalef(1.5, 1.5, 0.2);
 	pyramid();
+	glDeleteTextures(1, &bladeTexture);
 	glPopMatrix();
 
 	//Upper Blade
+	bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
 	glColor3f(1, 1, 1);
 	glPushMatrix();
 	glScalef(1.5, 3.25, 0.2);
 	pyramid();
+	glDeleteTextures(1, &bladeTexture);
 	glPopMatrix();
 	glPopMatrix();
 
@@ -597,12 +673,21 @@ void weapon() {
 	glTranslatef(0, 2, 0);
 	glPushMatrix();
 	glTranslatef(0, 0, 0.1);
+	bladeTexture = loadTexture("metallic+stripes-64x64.bmp");
+	glColor3f(0, 0, 1);
 	disk(1.35, 1.45);
+	glDeleteTextures(1, &bladeTexture);
 	glPopMatrix();
+	bladeTexture = loadTexture("metallic+stripes-64x64.bmp");
+	glColor3f(0, 0, 1);
 	cylinder(1.45, 1.45, 0.2);
+	glDeleteTextures(1, &bladeTexture);
 	glPushMatrix();
 	glTranslatef(0, 0, 0.1);
+	bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
+	glColor3f(1, 1, 1);
 	disk(1.45, 1.65);
+	glDeleteTextures(1, &bladeTexture);
 	glPopMatrix();
 	glPopMatrix();
 
@@ -634,39 +719,58 @@ void weapon() {
 	glColor3f(1, 1, 1);
 	glPushMatrix();
 	glTranslatef(0, -9, 0.1);
+	jointTexture = loadTexture("metallic+stripes-64x64.bmp");
+	glColor3f(0.8, 0.8, 0.8);
 	sphere(0.2);
+	glDeleteTextures(1, &jointTexture);
 	glPushMatrix();
 	glRotatef(-90, 0, 0, 1);
 	glRotatef(90, 0, 1, 0);
+	bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
 	cone(0.15, 1);
+	glDeleteTextures(1, &bladeTexture);
 	glPopMatrix();
 	glPopMatrix();
 
 	//Upper Handle Cover
 	glPushMatrix();
 	glTranslatef(0, 3, 0.1);
+	jointTexture = loadTexture("metallic+stripes-64x64.bmp");
+	glColor3f(0.8, 0.8, 0.8);
 	sphere(0.35);
+	glDeleteTextures(1, &jointTexture);
 
 	// Left Blade
 	glPushMatrix();
 	glRotatef(90, 0, 1, 0);
+	jointTexture = loadTexture("metallic+stripes-64x64.bmp");
+	glColor3f(0, 1, 1);
 	cylinder(0.15, 0.15, 1);
+	glDeleteTextures(1, &jointTexture);
+	
 	glPushMatrix();
 	glTranslatef(0, 0, 1);
+	jointTexture = loadTexture("metallic+stripes-64x64.bmp");
+	glColor3f(0.8, 0.8, 0.8);
 	sphere(0.15);
+	glDeleteTextures(1, &jointTexture);
 
 	glPushMatrix();
 	glRotatef(-90, 1, 0, 0);
 	glTranslatef(0, -0.4, 0);
 	glScalef(0.1, 0.8, 0.5);
+	bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
 	pyramid();
+	glDeleteTextures(1, &bladeTexture);
 	glPopMatrix();
 
 	glPushMatrix();
 	glRotatef(90, 1, 0, 0);
 	glTranslatef(0, 0.4, 0);
 	glScalef(0.1, 1.25, 0.5);
+	bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
 	pyramid();
+	glDeleteTextures(1, &bladeTexture);
 	glPopMatrix();
 	glPopMatrix();
 	glPopMatrix();
@@ -674,23 +778,33 @@ void weapon() {
 	//Right Blade
 	glPushMatrix();
 	glRotatef(-90, 0, 1, 0);
+	jointTexture = loadTexture("metallic+stripes-64x64.bmp");
+	glColor3f(0, 1, 1);
 	cylinder(0.15, 0.15, 1);
+	glDeleteTextures(1, &jointTexture);
 	glPushMatrix();
 	glTranslatef(0, 0, 1);
+	glColor3f(0.8, 0.8, 0.8);
+	jointTexture = loadTexture("metallic+stripes-64x64.bmp");
 	sphere(0.15);
+	glDeleteTextures(1, &jointTexture);
 
 	glPushMatrix();
 	glRotatef(-90, 1, 0, 0);
 	glTranslatef(0, -0.4, 0);
 	glScalef(0.1, 0.8, 0.5);
+	bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
 	pyramid();
+	glDeleteTextures(1, &bladeTexture);
 	glPopMatrix();
 
 	glPushMatrix();
 	glRotatef(90, 1, 0, 0);
 	glTranslatef(0, 0.4, 0);
 	glScalef(0.1, 1.25, 0.5);
+	bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
 	pyramid();
+	glDeleteTextures(1, &bladeTexture);
 	glPopMatrix();
 	glPopMatrix();
 	glPopMatrix();
@@ -1893,12 +2007,11 @@ void lowerBody() {
 void projection() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-
-	glTranslatef(ptx, pty, ptz);
 	glRotatef(prx, 1, 0, 0);
 	glRotatef(pry, 0, 1, 0);
 	glRotatef(prz, 0, 0, 1);
-
+	glTranslatef(ptx, pty, ptz);
+	
 	if (isOrtho) {
 		glOrtho(oLeft * zoom, oRight * zoom, oBottom * zoom, oTop * zoom, oNear * zoom, oFar * zoom);
 	}
