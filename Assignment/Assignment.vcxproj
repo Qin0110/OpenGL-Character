@@ -19,6 +19,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\door.bmp" />
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\doorHandler.bmp" />
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\floor.bmp" />
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\greyWall.bmp" />
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\houseWall.bmp" />
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\lantern.bmp" />
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\pathway.bmp" />
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\redWall.bmp" />
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\roof.bmp" />
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\table.bmp" />
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\test.bmp" />
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\wall.bmp" />
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\window.bmp" />
     <Image Include="brown+fabric-64x64.bmp" />
     <Image Include="circles+pattern+clothing-256x256.bmp" />
     <Image Include="cloth+fiber+fabric-512x512.bmp" />

@@ -39,6 +39,45 @@
     <Image Include="brown+fabric-64x64.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\table.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\pathway.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\test.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\lantern.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\floor.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\doorHandler.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\redWall.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\houseWall.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\greyWall.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\door.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\window.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\wall.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\roof.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
