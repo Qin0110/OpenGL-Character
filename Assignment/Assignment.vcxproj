@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="brown+fabric-64x64.bmp" />
     <Image Include="circles+pattern+clothing-256x256.bmp" />
     <Image Include="cloth+fiber+fabric-512x512.bmp" />
     <Image Include="ice+and+snow+ground-64x64.bmp" />

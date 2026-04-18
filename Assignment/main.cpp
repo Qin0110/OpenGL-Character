@@ -1618,124 +1618,207 @@ void foot() {
 }
 
 void leg() {
+	GLuint clothTexture = 0;
 	// Left Leg
 	glPushMatrix();
 
+	clothTexture = loadTexture("brown+fabric-64x64.bmp");
 	glBegin(GL_QUADS);
+	glColor3f(0.2, 0.2, 0.2);
 	// Up (The new, smaller top face at Y = 0)
+	glTexCoord2d(1, 0);
 	glVertex3f(-1.25, 0, -1.5);
+	glTexCoord2d(1, 1);
 	glVertex3f(-1.25, 0, 0.0);
+	glTexCoord2d(0, 1);
 	glVertex3f(-0.25, 0, 0.0);
+	glTexCoord2d(0, 0);
 	glVertex3f(-0.25, 0, -1.5);
 
 	// Left
+	glTexCoord2d(1, 0);
 	glVertex3f(-1.5, -1, 0.5);   // Base matches your old box
+	glTexCoord2d(1, 1);
 	glVertex3f(-1.5, -1, -2);
+	glTexCoord2d(0, 1);
 	glVertex3f(-1.25, 0, -1.5);  // Tapers to the new top
+	glTexCoord2d(0, 0);
 	glVertex3f(-1.25, 0, 0.0);
 
 	// Back
+	glTexCoord2d(1, 0);
 	glVertex3f(-1.5, -1, -2);
+	glTexCoord2d(1, 1);
 	glVertex3f(0, -1, -2);
+	glTexCoord2d(0, 1);
 	glVertex3f(-0.25, 0, -1.5);
+	glTexCoord2d(0, 0);
 	glVertex3f(-1.25, 0, -1.5);
 
-	// Right 
+	// Right
+	glTexCoord2d(1, 0);
 	glVertex3f(0, -1, -2);
+	glTexCoord2d(1, 1);
 	glVertex3f(0, -1, 0.5);
+	glTexCoord2d(0, 1);
 	glVertex3f(-0.25, 0, 0.0);
+	glTexCoord2d(0, 0);
 	glVertex3f(-0.25, 0, -1.5);
 
 	// Front 
+	glTexCoord2d(1, 0);
 	glVertex3f(0, -1, 0.5);
+	glTexCoord2d(1, 1);
 	glVertex3f(-1.5, -1, 0.5);
+	glTexCoord2d(0, 1);
 	glVertex3f(-1.25, 0, 0.0);
+	glTexCoord2d(0, 0);
 	glVertex3f(-0.25, 0, 0.0);
 
-	// Down (The exact same coordinates as your old "Up" face)
+	// Down
+	glTexCoord2d(1, 0);
 	glVertex3f(-1.5, -1, -2);
+	glTexCoord2d(1, 1);
 	glVertex3f(-1.5, -1, 0.5);
+	glTexCoord2d(0, 1);
 	glVertex3f(0, -1, 0.5);
+	glTexCoord2d(0, 0);
 	glVertex3f(0, -1, -2);
 	glEnd();
+	glDeleteTextures(1, &clothTexture);
 
+	glColor3f(0, 0, 0);
+	clothTexture = loadTexture("brown+fabric-64x64.bmp");
 	glBegin(GL_QUADS);
 		// Up 
-		glVertex3f(-1.5, -1, -2);  
+		glTexCoord2d(1, 0);
+		glVertex3f(-1.5, -1, -2); 
+		glTexCoord2d(1, 1);
 		glVertex3f(-1.5, -1, 0.5); 
-		glVertex3f(0, -1, 0.5);    
+		glTexCoord2d(0, 1);
+		glVertex3f(0, -1, 0.5); 
+		glTexCoord2d(0, 0);
 		glVertex3f(0, -1, -2);     
 
 		// Left
+		glTexCoord2d(1, 0);
 		glVertex3f(-1.5, -1, 0.5); 
+		glTexCoord2d(1, 1);
 		glVertex3f(-1.5, -1, -2);  
+		glTexCoord2d(0, 1);
 		glVertex3f(-1.5, -2, -2);  
+		glTexCoord2d(0, 0);
 		glVertex3f(-1.5, -2, 0.5); 
 
 		// Back
+		glTexCoord2d(1, 0);
 		glVertex3f(-1.5, -1, -2); 
+		glTexCoord2d(1, 1);
 		glVertex3f(0, -1, -2);     
+		glTexCoord2d(0, 1);
 		glVertex3f(-0.25, -2, -2); 
+		glTexCoord2d(0, 0);
 		glVertex3f(-1.5, -2, -2);  
 
-		// Right 
-		glVertex3f(0, -1, -2);     
-		glVertex3f(0, -1, 0.5);   
+		// Right
+		glTexCoord2d(1, 0);
+		glVertex3f(0, -1, -2);
+		glTexCoord2d(1, 1);
+		glVertex3f(0, -1, 0.5); 
+		glTexCoord2d(0, 1);
 		glVertex3f(-0.25, -2, 0.5);
+		glTexCoord2d(0, 0);
 		glVertex3f(-0.25, -2, -2); 
 
 		// Front 
-		glVertex3f(0, -1, 0.5);   
+		glTexCoord2d(1, 0);
+		glVertex3f(0, -1, 0.5);
+		glTexCoord2d(1, 1);
 		glVertex3f(-1.5, -1, 0.5); 
+		glTexCoord2d(0, 1);
 		glVertex3f(-1.5, -2, 0.5);
+		glTexCoord2d(0, 0);
 		glVertex3f(-0.25, -2, 0.5);
 
 		// Down
-		glVertex3f(-1.5, -2, -2); 
+		glTexCoord2d(1, 0);
+		glVertex3f(-1.5, -2, -2);
+		glTexCoord2d(1, 1);
 		glVertex3f(-1.5, -2, 0.5);
+		glTexCoord2d(0, 1);
 		glVertex3f(-0.25, -2, 0.5);
+		glTexCoord2d(0, 0);
 		glVertex3f(-0.25, -2, -2); 
 	glEnd();
+	glDeleteTextures(1, &clothTexture);
 
+	glColor3f(0.5, 0, 0);
+	clothTexture = loadTexture("brown+fabric-64x64.bmp");
 	glBegin(GL_QUADS);
 		// Up (viewed from above, CCW)
+		glTexCoord2d(1, 0);
 		glVertex3f(-1.5, -2, -2);
+		glTexCoord2d(1, 1);
 		glVertex3f(-0.25, -2, -2);
+		glTexCoord2d(0, 1);
 		glVertex3f(-0.25, -2, 0.5);
+		glTexCoord2d(0, 0);
 		glVertex3f(-1.5, -2, 0.5);
 
 		// Bottom (viewed from below, CCW)
+		glTexCoord2d(1, 0);
 		glVertex3f(-1.25, -3.75, -1.5);
+		glTexCoord2d(1, 1);
 		glVertex3f(-0.5, -3.75, -1.5);
+		glTexCoord2d(0, 1);
 		glVertex3f(-0.5, -3.75, 0);
+		glTexCoord2d(0, 0);
 		glVertex3f(-1.25, -3.75, 0);
 
 		// Front (viewed from -Z, CCW)
+		glTexCoord2d(1, 0);
 		glVertex3f(-1.5, -2, -2);
+		glTexCoord2d(1, 1);
 		glVertex3f(-1.25, -3.75, -1.5);
+		glTexCoord2d(0, 1);
 		glVertex3f(-0.5, -3.75, -1.5);
+		glTexCoord2d(0, 0);
 		glVertex3f(-0.25, -2, -2);
 
 		// Back (viewed from +Z, CCW)
+		glTexCoord2d(1, 0);
 		glVertex3f(-0.25, -2, 0.5);
+		glTexCoord2d(1, 1);
 		glVertex3f(-0.5, -3.75, 0);
+		glTexCoord2d(0, 1);
 		glVertex3f(-1.25, -3.75, 0);
+		glTexCoord2d(0, 0);
 		glVertex3f(-1.5, -2, 0.5);
 
 		// Left (viewed from -X, CCW)
+		glTexCoord2d(1, 0);
 		glVertex3f(-1.5, -2, 0.5);
+		glTexCoord2d(1, 1);
 		glVertex3f(-1.5, -2, -2);
+		glTexCoord2d(0, 1);
 		glVertex3f(-1.25, -3.75, -1.5);
+		glTexCoord2d(0, 0);
 		glVertex3f(-1.25, -3.75, 0);
 
 		// Right (viewed from +X, CCW)
+		glTexCoord2d(1, 0);
 		glVertex3f(-0.25, -2, -2);
+		glTexCoord2d(1, 1);
 		glVertex3f(-0.25, -2, 0.5);
+		glTexCoord2d(0, 1);
 		glVertex3f(-0.5, -3.75, 0);
+		glTexCoord2d(0, 0);
 		glVertex3f(-0.5, -3.75, -1.5);
 	glEnd();
+	glDeleteTextures(1, &clothTexture);
 	
 	//Joint
+	glColor3f(0.2, 0.2, 0.2);
 	glPushMatrix();
 		glTranslatef(-0.9, -3.8, -0.75);
 		glScalef(1, 1, 1.5);
@@ -1743,86 +1826,138 @@ void leg() {
 	glPopMatrix();
 
 	// Lower Leg
+	clothTexture = loadTexture("brown+fabric-64x64.bmp");
+	glColor3f(0.2, 0, 0);
 	glPushMatrix();
 	glBegin(GL_QUADS);
 		// Up
+		glTexCoord2d(1, 0);
 		glVertex3f(-1.25, -3.9, -1.5);
+		glTexCoord2d(1, 1);
 		glVertex3f(-0.5, -3.9, -1.5);
+		glTexCoord2d(0, 1);
 		glVertex3f(-0.5, -3.9, 0);
+		glTexCoord2d(0, 0);
 		glVertex3f(-1.25, -3.9, 0);
 
 		// Left
+		glTexCoord2d(1, 0);
 		glVertex3f(-1.25, -3.9, 0);
+		glTexCoord2d(1, 1);
 		glVertex3f(-1.25, -5, 0);
+		glTexCoord2d(0, 1);
 		glVertex3f(-1.25, -5, -1.5);
+		glTexCoord2d(0, 0);
 		glVertex3f(-1.25, -3.9, -1.5);
 
 		// Back
+		glTexCoord2d(1, 0);
 		glVertex3f(-1.25, -3.9, -1.5);
+		glTexCoord2d(1, 1);
 		glVertex3f(-1.25, -5, -1.5);
+		glTexCoord2d(0, 1);
 		glVertex3f(-0.5, -5, -1.5);
+		glTexCoord2d(0, 0);
 		glVertex3f(-0.5, -3.9, -1.5);
 
 		// Right
+		glTexCoord2d(1, 0);
 		glVertex3f(-0.5, -3.9, -1.5);
+		glTexCoord2d(1, 1);
 		glVertex3f(-0.5, -5, -1.5);
+		glTexCoord2d(0, 1);
 		glVertex3f(-0.5, -5, 0);
+		glTexCoord2d(0, 0);
 		glVertex3f(-0.5, -3.9, 0);
 
 		// Front
+		glTexCoord2d(1, 0);
 		glVertex3f(-0.5, -3.9, 0);
+		glTexCoord2d(1, 1);
 		glVertex3f(-1.25, -3.9, 0);
+		glTexCoord2d(0, 1);
 		glVertex3f(-1.25, -5, 0);
+		glTexCoord2d(0, 0);
 		glVertex3f(-0.5, -5, 0);
 
 		// Bottom
+		glTexCoord2d(1, 0);
 		glVertex3f(-0.5, -5, 0);
+		glTexCoord2d(1, 1);
 		glVertex3f(-1.25, -5, 0);
+		glTexCoord2d(0, 1);
 		glVertex3f(-1.25, -5, -1.5);
+		glTexCoord2d(0, 0);
 		glVertex3f(-0.5, -5, -1.5);
 	glEnd();
+	glDeleteTextures(1, &clothTexture);
 	glPopMatrix();
 
-
 	glPushMatrix();
-	glColor3f(0.95, 0.8, 0.7);
+	glColor3f(0.5, 0.5, 0.5);
+	clothTexture = loadTexture("brown+fabric-64x64.bmp");
 		glBegin(GL_QUADS);
 		// Up
+		glTexCoord2d(1, 0);
 		glVertex3f(-1.25, -5, -1.5);
+		glTexCoord2d(1, 1);
 		glVertex3f(-0.5, -5, -1.5);
+		glTexCoord2d(0, 1);
 		glVertex3f(-0.5, -5, 0);
+		glTexCoord2d(0, 0);
 		glVertex3f(-1.25, -5, 0);
 
 		// Left
+		glTexCoord2d(1, 0);
 		glVertex3f(-1.25, -5, 0);
-		glVertex3f(-0.65, -7, 0);
-		glVertex3f(-0.65, -7, -1.5);
+		glTexCoord2d(1, 1);
+		glVertex3f(-1.15, -7, 0);
+		glTexCoord2d(0, 1);
+		glVertex3f(-1.15, -7, -1.5);
+		glTexCoord2d(0, 0);
 		glVertex3f(-1.25, -5, -1.5);
 
 		// Back
+		glTexCoord2d(1, 0);
 		glVertex3f(-1.25, -5, -1.5);
+		glTexCoord2d(1, 1);
 		glVertex3f(-1.15, -7, -1.5);
+		glTexCoord2d(0, 1);
 		glVertex3f(-0.65, -7, -1.5);
+		glTexCoord2d(0, 0);
 		glVertex3f(-0.5, -5, -1.5);
 
 		// Right
+		glTexCoord2d(1, 0);
 		glVertex3f(-0.5, -5, -1.5);
+		glTexCoord2d(1, 1);
 		glVertex3f(-0.65, -7, -1.5);
+		glTexCoord2d(0, 1);
 		glVertex3f(-0.65, -7, 0);
+		glTexCoord2d(0, 0);
 		glVertex3f(-0.5, -5, 0);
 
 		// Front
+		glTexCoord2d(1, 0);
 		glVertex3f(-0.5, -5, 0);
+		glTexCoord2d(1, 1);
 		glVertex3f(-1.25, -5, 0);
+		glTexCoord2d(0, 1);
 		glVertex3f(-1.15, -7, 0);
+		glTexCoord2d(0, 0);
 		glVertex3f(-0.65, -7, 0);
 
 		// Bottom
+		glTexCoord2d(1, 0);
 		glVertex3f(-0.65, -7, 0);
+		glTexCoord2d(1, 1);
 		glVertex3f(-1.15, -7, 0);
+		glTexCoord2d(0, 1);
 		glVertex3f(-1.15, -7, -1.5);
+		glTexCoord2d(0, 0);
 		glVertex3f(-0.65, -7, -1.5);
 		glEnd();
+		glDeleteTextures(1, &clothTexture);
 	glPopMatrix();
 
 	glPopMatrix();
