@@ -2,6 +2,9 @@
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #include <math.h>
+#include <chrono>
+#include <thread>
+#include <iostream>
 
 #define WINDOW_TITLE "Assignment Character"
 #define MAX_DROPS 100
@@ -24,6 +27,15 @@ int character_facing_angle = 0, character_rotation_speed = 90, target_facing_ang
 float mx = 0, my = 0, mz = 0, mspeed = 1; //movement
 bool armorOn = true;
 
+// Attack Animation
+bool isAttack = false;
+float swingTargetShoulder = 60;
+float swingTargetForearm = 80;
+float swingSpeed = 5;
+int swingForward = 0;
+float attackPalmAngles = 0;
+float attackWeaponSpear = 0;
+
 //Light
 bool lightOn = TRUE;
 bool textureOn = TRUE;
@@ -39,9 +51,7 @@ BITMAP BMP;
 HBITMAP hBMP = NULL;
 GLuint roofTex;
 
-
 double objRot = 0.0;
-
 
 //hand animation
 int selectedHand = 0;
@@ -86,6 +96,16 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 		case VK_ESCAPE:
 			PostQuitMessage(0);
+			break;
+		case VK_SHIFT:
+			selectedHand = 1;
+			swingForward = 1;
+			isAttack = !isAttack;
+			forearmAngles[selectedHand] = 0;
+			shoulderAngles[selectedHand] = 0;
+			palmAngles[selectedHand] = 288; 
+			attackPalmAngles = 0;
+			attackWeaponSpear = 0;
 			break;
 		case VK_UP:
 			pty += pspeed;
@@ -401,6 +421,65 @@ bool initPixelFormat(HDC hdc)
 	}
 }
 //--------------------------------------------------------------------
+
+void attacking() {
+	//using namespace std::chrono_literals;
+	if (!isAttack) return;
+
+	if (swingForward == 1) {
+		shoulderAngles[selectedHand] += swingSpeed;
+		forearmAngles[selectedHand] += swingSpeed;
+		palmAngles[selectedHand] -= 5;
+
+		if (shoulderAngles[selectedHand] >= swingTargetShoulder ||
+			forearmAngles[selectedHand] >= swingTargetForearm) {
+			shoulderAngles[selectedHand] = swingTargetShoulder;
+			forearmAngles[selectedHand] = swingTargetForearm;
+			//std::this_thread::sleep_for(0.5s);
+			swingForward = 2;
+		}
+	}
+	else if (swingForward == 2) {
+		shoulderAngles[selectedHand] -= swingSpeed;
+		forearmAngles[selectedHand] -= swingSpeed;
+		palmAngles[selectedHand] += 5;
+
+		if (shoulderAngles[selectedHand] <= -30.0f ||
+			forearmAngles[selectedHand] <= -20.0f) {
+			shoulderAngles[selectedHand] = -30.0f;
+			forearmAngles[selectedHand] = -20.0f;
+			//std::this_thread::sleep_for(0.5s);
+			swingForward = 3;
+		}
+	}
+	else if (swingForward == 3)
+	{
+		bool done = true;
+		if (shoulderAngles[selectedHand] < 30)
+		{
+			shoulderAngles[selectedHand] += swingSpeed + 5;
+			done = false;
+		}
+		if (forearmAngles[selectedHand] < 50)
+		{
+			forearmAngles[selectedHand] += swingSpeed;
+			done = false;
+		}
+		if (attackPalmAngles != -90)
+		{
+			attackPalmAngles -= (swingSpeed * 2);
+			done = false;
+		}
+		if (attackWeaponSpear != 5)
+		{
+			attackWeaponSpear += 0.5;
+		}
+		if (done)
+		{
+			swingForward = 0;
+		}
+	}
+}
 
 void initRain() {
 	for (int i = 0; i < MAX_DROPS; i++) {
@@ -848,6 +927,13 @@ void characterArm(int handIndex) {
 		
 		//hand palm
 		glRotatef(palmAngles[handIndex], 0.0f, 0.0f, 1.0f);
+		
+		// attack palm
+		if (isAttack && handIndex == 1)
+		{
+			glRotatef(attackPalmAngles, 0, 1, 0);
+		}
+
 		glColor3f(0.15, 0.15, 0.15);
 		gluSphere(quadric, 0.10, 30, 30);
 
@@ -872,6 +958,7 @@ void characterArm(int handIndex) {
 			if (handIndex == 1) {
 				glPushMatrix();
 				glScalef(1, 1.5, 1);
+				glTranslatef(0, attackWeaponSpear, 0);
 				weapon();
 				glPopMatrix();
 			}
@@ -2192,7 +2279,7 @@ void display()
 	glTranslatef(0.0, -0.5, -4.5 + tz);
 	glRotatef(objRot, 0.0, 1.0, 0.0);
 
-
+	attacking();
 
 	//Character
 	//glTranslatef(-2.5, -2.5, 0);
