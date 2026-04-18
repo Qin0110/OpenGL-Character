@@ -22,6 +22,7 @@ float zoom = 1.0f, zoom_speed = 0.1f;
 float left_leg_angle = 0, right_leg_angle = 0, maximum_leg_angle = 25, minimum_leg_angle = -25, leg_angle_speed = 2, leg_direction = 1;
 int character_facing_angle = 0, character_rotation_speed = 90, target_facing_angle= 0;
 float mx = 0, my = 0, mz = 0, mspeed = 0.1; //movement
+bool armorOn = true;
 
 //Light
 bool lightOn = TRUE;
@@ -285,6 +286,10 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 			prz += prspeed;
 			break;
 
+		case VK_F5:
+			armorOn = !armorOn;
+			break;
+
 		// reset all
 		case VK_SPACE:
 			pty = 0, ptx = 0, ptz = 0;
@@ -349,7 +354,7 @@ void initRain() {
 		rain[i].y = 1.0f + ((float)rand() / RAND_MAX);
 	
 		// Random fall speed
-		rain[i].speed = 0.001f + ((float)rand() / RAND_MAX) * 0.007f;
+		rain[i].speed = 0.005f + ((float)rand() / RAND_MAX) * 0.01f;
 	
 		// Random drop length
 		rain[i].length = 0.001f + ((float)rand() / RAND_MAX) * 0.005f;
@@ -371,7 +376,7 @@ void drawRain() {
 	glDisable(GL_DEPTH_TEST); // draw on top of everything
 
 	glColor3f(1, 1, 1.0f); // light blue tint
-	glLineWidth(3);
+	glLineWidth(4);
 
 	for (int i = 0; i < MAX_DROPS; i++) {
 		glBegin(GL_LINE_STRIP);
@@ -559,6 +564,8 @@ void drawBox(double w, double h, double d) {
 }
 
 void weapon() {
+	GLuint handleTexture = 0;
+
 	//Spear Blade
 	glPushMatrix();
 	glTranslatef(0, 4, 0.1);
@@ -596,6 +603,7 @@ void weapon() {
 	glPopMatrix();
 
 	//Handle
+	handleTexture = loadTexture("metallic+stripes-64x64.bmp");
 	glColor3f(1, 1, 1);
 	glPushMatrix();
 	glTranslatef(0, 3, 0.1);
@@ -604,8 +612,10 @@ void weapon() {
 	glRotatef(90, 0, 1, 0);
 	cylinder(0.15, 0.15, 12);
 	glPopMatrix();
-	glPopMatrix();
+	glDeleteTextures(1, &handleTexture);
 
+	handleTexture = loadTexture("rose-gold-leather-textured-background.bmp");
+	glPopMatrix();
 	glColor3f(0.65, 0.35, 0);
 	glPushMatrix();
 	glTranslatef(0, 3, 0.1);
@@ -613,6 +623,8 @@ void weapon() {
 	glRotatef(90, 0, 1, 0);
 	cylinder(0.2, 0.2, 3);
 	glPopMatrix();
+	glDeleteTextures(1, &handleTexture);
+	
 
 	//Lower Handle Cover
 	glColor3f(1, 1, 1);
@@ -739,9 +751,12 @@ void characterArm(int handIndex) {
 			glScalef(0.2, 0.2, 0.2);
 
 			glTranslatef(0.0, 2.0, 0.0);
-			if(handIndex == 1)
+			if (handIndex == 1) {
+				glPushMatrix();
+				glScalef(1, 1.5, 1);
 				weapon();
-	
+				glPopMatrix();
+			}
 		glPopMatrix();
 
 		
@@ -1696,47 +1711,76 @@ void leg() {
 }
 
 void lowerBody() {
+	GLuint texture = 0;
+	GLuint waistTexture = 0;
  	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	
-	//Wrist
-	glColor3f(0.15, 0.15, 0.15);
+	//Waist
+	waistTexture = loadTexture("metallic+stripes-64x64.bmp");
+	glColor3f(0.7, 0.7, 0.7);
 	glBegin(GL_QUADS);
-		//Upper wrist
-		glVertex3f(-1.5, 0, -1.5);  
+		//Upper Waist
+		glTexCoord2f(0, 1);
+		glVertex3f(-1.5, 0, -1.5);
+		glTexCoord2f(1, 1);
 		glVertex3f(1.5, 0, -1.5);
+		glTexCoord2f(1, 0);
 		glVertex3f(1.5, 0, 0);
+		glTexCoord2f(0, 0);
 		glVertex3f(-1.5, 0, 0);
 
 		//Left face
-		glVertex3f(-1.5, 0, 0.5);
+		glTexCoord2f(0, 1);
+		glVertex3f(-1.5, 0, 0.);
+		glTexCoord2f(1, 1);
 		glVertex3f(-1.5, -1, 0.5);
+		glTexCoord2f(1, 0);
 		glVertex3f(-1.5	, -1, -2);
-		glVertex3f(-1.5, 0, -2);
+		glTexCoord2f(0, 0);
+		glVertex3f(-1.5, 0, -1.5);
 		
 		//Front Face
+		glTexCoord2f(0, 1);
 		glVertex3f(-1.5, 0, -1.5);
+		glTexCoord2f(1, 1);
 		glVertex3f(-1.5, -1, -2);
+		glTexCoord2f(1, 0);
 		glVertex3f(1.5, -1, -2);
+		glTexCoord2f(0, 0);
 		glVertex3f(1.5, 0, -1.5);
 
 		//Right Face
-		glVertex3f(1.5, 0, 0.5);
+		glTexCoord2f(0, 1);
+		glVertex3f(1.5, 0, 0);
+		glTexCoord2f(1, 1);
 		glVertex3f(1.5, -1, 0.5);
+		glTexCoord2f(1, 0);
 		glVertex3f(1.5, -1, -2);
-		glVertex3f(1.5, 0, -2);
+		glTexCoord2f(0, 0);
+		glVertex3f(1.5, 0, -1.5);
 
 		//Back Face
+		glTexCoord2f(0, 0);
+		
 		glVertex3f(1.5, 0, 0);
+		glTexCoord2f(0, 1);
 		glVertex3f(-1.5, 0, 0);
+		glTexCoord2f(1, 0);
 		glVertex3f(-1.5, -1, 0.5);
+		glTexCoord2f(1, 1);
 		glVertex3f(1.5, -1, 0.5);
 		
-		//Lower Wrist
+		//Lower Waist
+		glTexCoord2f(0, 1);
 		glVertex3f(1.5, -1, 0.5); // 4
+		glTexCoord2f(1, 1);
 		glVertex3f(-1.5, -1, 0.5); // 2
+		glTexCoord2f(1, 0);
 		glVertex3f(-1.5, -1, -2); // 1
+		glTexCoord2f(0, 0);
 		glVertex3f(1.5, -1, -2); // 3
 	glEnd();
+	glDeleteTextures(1, &waistTexture);
 
 	glColor3f(0.1, 0.1, 0.1);
 	glPushMatrix();
@@ -1744,12 +1788,7 @@ void lowerBody() {
 		glRotated(90, 0, 1, 0);
 		cylinder(1.1, 1.1, 3);
 
-		
-
-
 	glPopMatrix();
-
-
 
 	// Left Leg
 	glColor3f(0.15, 0.15, 0.15);
@@ -1757,14 +1796,14 @@ void lowerBody() {
 	glTranslatef(-0.875, -0.5, -0.75); // Move pivot to leg's top-center attachment
 	glRotatef(left_leg_angle, 1, 0, 0);          // Rotate around that pivot
 	glTranslatef(0.875, 1, 0.75);    // Move back, but offset to correct world position
-	glTranslatef(0, -1, 0);          // Final placement below wrist
+	glTranslatef(0, -1, 0);          // Final placement below waist
 	leg();
 	foot();
 	glPopMatrix();
 
 	// Right Leg
-	//glColor3f(0.15, 0.15, 0.15);
-	glColor3f(1, 0, 0);
+	glColor3f(0.15, 0.15, 0.15);
+	//glColor3f(1, 0, 0);
 	glPushMatrix();
 	glTranslatef(0.875, -0.5, -0.75);  // Mirror pivot for right side
 	glRotatef(right_leg_angle, 1, 0, 0);
@@ -1781,6 +1820,68 @@ void lowerBody() {
 	glPopMatrix();
 	glPopMatrix();
 	glPopMatrix();
+
+	if (armorOn)
+	{
+		glPushMatrix();
+		glRotatef(-10, 1, 0, 0);
+		glTranslatef(-1.5, -1, 0);
+		for (int i = 0; i < 7; i++)
+		{
+			for (int j = 0; j < 12; j++)
+			{
+				glPushMatrix();
+
+				glTranslatef(i * 0.5f, j * -0.6, 0.75);
+				glColor3f(1, 1, 0.5);
+				texture = loadTexture("rusty+metal-32x32.bmp");
+				disk(0.5, 0.7);
+				glDeleteTextures(1, &texture);
+				glPopMatrix();
+			}
+		}
+		glPopMatrix();
+
+		glPushMatrix();
+		glRotatef(-90, 0, 1, 0);
+		glRotatef(7, 1, 0, 0);
+		glTranslatef(-1.5, -1, -2.3);
+		for (int i = 0; i < 5; i++)
+		{
+			for (int j = 0; j < 12; j++)
+			{
+				glPushMatrix();
+
+				glTranslatef(i * 0.5f, j * -0.6, 0.75);
+				glColor3f(1, 1, 0.5);
+				texture = loadTexture("rusty+metal-32x32.bmp");
+				disk(0.5, 0.7);
+				glDeleteTextures(1, &texture);
+				glPopMatrix();
+			}
+		}
+		glPopMatrix();
+
+		glPushMatrix();
+		glRotatef(90, 0, 1, 0);
+		glRotatef(7, 1, 0, 0);
+		glTranslatef(-0.5, -1, -2.3);
+		for (int i = 0; i < 5; i++)
+		{
+			for (int j = 0; j < 12; j++)
+			{
+				glPushMatrix();
+
+				glTranslatef(i * 0.5f, j * -0.6, 0.75);
+				glColor3f(1, 1, 0.5);
+				texture = loadTexture("rusty+metal-32x32.bmp");
+				disk(0.5, 0.7);
+				glDeleteTextures(1, &texture);
+				glPopMatrix();
+			}
+		}
+		glPopMatrix();
+	}
 }
 
 
