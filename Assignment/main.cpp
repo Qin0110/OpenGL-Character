@@ -509,9 +509,13 @@ void pyramid() {
 
 	// Square base using GL_QUADS
 	glBegin(GL_QUADS);
+	glTexCoord2d(0, 1);
 	glVertex3f(-0.5f, 0.0f, 0.5f);
+	glTexCoord2d(1, 1);
 	glVertex3f(0.5f, 0.0f, 0.5f);
+	glTexCoord2d(1, 0);
 	glVertex3f(0.5f, 0.0f, -0.5f);
+	glTexCoord2d(0, 0);
 	glVertex3f(-0.5f, 0.0f, -0.5f);
 	glEnd();
 }
