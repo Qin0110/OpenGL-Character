@@ -35,6 +35,8 @@ float swingSpeed = 5;
 int swingForward = 0;
 float attackPalmAngles = 0;
 float attackWeaponSpear = 0;
+float attackRing = 0;
+bool ejectRing = false;
 
 //Light
 bool lightOn = TRUE;
@@ -106,6 +108,11 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 			palmAngles[selectedHand] = 288; 
 			attackPalmAngles = 0;
 			attackWeaponSpear = 0;
+			attackRing = 0;
+			break;
+		case VK_CONTROL:
+			ejectRing = !ejectRing;
+			attackRing = 0;
 			break;
 		case VK_UP:
 			pty += pspeed;
@@ -479,6 +486,13 @@ void attacking() {
 			swingForward = 0;
 		}
 	}
+	if (ejectRing && isAttack)
+	{
+		if (attackRing < 20)
+		{
+			attackRing += 1;
+		}
+	}
 }
 
 void initRain() {
@@ -746,6 +760,8 @@ void weapon() {
 	glPopMatrix();
 
 	//Ring blade between
+	glPushMatrix();
+	glTranslatef(0, attackRing, 0);
 	glColor3f(1, 1, 1);
 	glPushMatrix();
 	glScalef(0.7, 0.7, 0.7);
@@ -767,6 +783,7 @@ void weapon() {
 	glColor3f(1, 1, 1);
 	disk(1.45, 1.65);
 	glDeleteTextures(1, &bladeTexture);
+	glPopMatrix();
 	glPopMatrix();
 	glPopMatrix();
 
