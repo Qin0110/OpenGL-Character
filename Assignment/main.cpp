@@ -18,11 +18,11 @@ struct Raindrop {
 
 Raindrop rain[MAX_DROPS];
 
-float oLeft = -10, oRight = 10, oBottom = -10, oTop = 10, oNear = -10, oFar = 20;
+float oLeft = -20, oRight = 20, oBottom = -20, oTop = 20, oNear = -50, oFar = 100;
 float ptx = 0, pty = 0, ptz = 0, pspeed = 0.1;
 float p_rotate_angle = 0, p_angle_speed = 10;
 float zoom = 1.0f, zoom_speed = 0.1f;
-float left_leg_angle = 0, right_leg_angle = 0, maximum_leg_angle = 25, minimum_leg_angle = -25, leg_angle_speed = 2, leg_direction = 1;
+float left_leg_angle = 0, right_leg_angle = 0, maximum_leg_angle = 30, minimum_leg_angle = -30, leg_angle_speed = 5, leg_direction = 1;
 int character_facing_angle = 0, character_rotation_speed = 90, target_facing_angle= 0;
 float mx = 0, my = 0, mz = 0, mspeed = 1; //movement
 bool armorOn = true;
@@ -46,7 +46,7 @@ bool textureOn = TRUE;
 float tz = 0.0;
 float tSpeed = 0.5;
 float prx = 0, pry = 0, prz = 0, prspeed = 10;
-bool isOrtho = true;
+bool isOrtho = false;
 
 
 //background texture mapping
@@ -182,82 +182,84 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 			objRot += 5.0; // spin right
 			break;
 
-		case 'O': isOrtho = true; tz = 0; break; // reset zoom if changing projection
-		case 'P': isOrtho = false; tz = 0; break;
+		case 'O': 
+			isOrtho = true; 
+			tz = 0; 
+			if (isOrtho)
+			{
+				zoom = 3.0f;
+				prx = -45;
+				pry = -45;
+			}
+			break; 
+		case 'P': 
+			isOrtho = false; 
+			tz = 0; 
+			zoom = 0.0;
+			prx = 0;
+			pry = 0;
+			break;
 
-			//character movement
-		case 'S':
-			if (isOrtho)
-			{
-				if (mz > -(oFar - 3) / 2)
-				{
-					mz -= mspeed;
-					left_leg_angle += (leg_angle_speed * leg_direction);
-					if (left_leg_angle >= maximum_leg_angle) {
-						left_leg_angle = maximum_leg_angle;
-						leg_direction = -1;
-					}
-					else if (left_leg_angle <= minimum_leg_angle) {
-						left_leg_angle = minimum_leg_angle;
-						leg_direction = 1;
-					}
-					right_leg_angle = -left_leg_angle;
-				}
+		case 'S': {
+			float rad = character_facing_angle * 3.14159f / 180.0f;
+			float newMx = mx - sin(rad) * mspeed;
+			float newMz = mz - cos(rad) * mspeed;
+
+			bool inBounds;
+			if (isOrtho) {
+				inBounds = (newMz > -(oFar - 3) / 2);
 			}
-			else
-			{
-				if (mz > -90)
-				{
-					mz -= mspeed;
-					left_leg_angle += (leg_angle_speed * leg_direction);
-					if (left_leg_angle >= maximum_leg_angle) {
-						left_leg_angle = maximum_leg_angle;
-						leg_direction = -1;
-					}
-					else if (left_leg_angle <= minimum_leg_angle) {
-						left_leg_angle = minimum_leg_angle;
-						leg_direction = 1;
-					}
-					right_leg_angle = -left_leg_angle;
+			else {
+				inBounds = (newMx > -40 && newMx < 40 && 
+					newMz > -30 && newMz < 100);     
+			}
+
+			if (inBounds) {
+				mx = newMx;
+				mz = newMz;
+				left_leg_angle += (leg_angle_speed * leg_direction);
+				if (left_leg_angle >= maximum_leg_angle) {
+					left_leg_angle = maximum_leg_angle;
+					leg_direction = -1;
 				}
+				else if (left_leg_angle <= minimum_leg_angle) {
+					left_leg_angle = minimum_leg_angle;
+					leg_direction = 1;
+				}
+				right_leg_angle = -left_leg_angle;
 			}
 			break;
-		case 'W':
-			if (isOrtho)
-			{
-				if (mz < -(oNear + 3))
-				{
-					mz += mspeed;
-					left_leg_angle += (leg_angle_speed * leg_direction);
-					if (left_leg_angle >= maximum_leg_angle) {
-						left_leg_angle = maximum_leg_angle;
-						leg_direction = -1;
-					}
-					else if (left_leg_angle <= minimum_leg_angle) {
-						left_leg_angle = minimum_leg_angle;
-						leg_direction = 1;
-					}
-					right_leg_angle = -left_leg_angle;
-				}
+		}
+		case 'W': {
+			float rad = character_facing_angle * 3.14159f / 180.0f;
+			float newMx = mx + sin(rad) * mspeed; 
+			float newMz = mz + cos(rad) * mspeed; 
+
+			bool inBounds;
+			if (isOrtho) {
+				inBounds = (newMz < -(oNear - 5));
 			}
-			else
-			{
-				if (mz < 1)
-				{
-					mz += mspeed;
-					left_leg_angle += (leg_angle_speed * leg_direction);
-					if (left_leg_angle >= maximum_leg_angle) {
-						left_leg_angle = maximum_leg_angle;
-						leg_direction = -1;
-					}
-					else if (left_leg_angle <= minimum_leg_angle) {
-						left_leg_angle = minimum_leg_angle;
-						leg_direction = 1;
-					}
-					right_leg_angle = -left_leg_angle;
+			else {
+				inBounds = (newMx > -40 && newMx < 40 &&  
+					newMz > -30 && newMz < 100);    
+			}
+
+			if (inBounds) {
+				mx = newMx;
+				mz = newMz;
+				left_leg_angle += (leg_angle_speed * leg_direction);
+				if (left_leg_angle >= maximum_leg_angle) {
+					left_leg_angle = maximum_leg_angle;
+					leg_direction = -1;
 				}
+				else if (left_leg_angle <= minimum_leg_angle) {
+					left_leg_angle = minimum_leg_angle;
+					leg_direction = 1;
+				}
+				right_leg_angle = -left_leg_angle;
 			}
 			break;
+		}
 
 			// character face directon
 		case 'A':
@@ -373,14 +375,23 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 			break;
 
 		//Camera viewing angle
-		case '8':
+		case '5':
+			prx -= prspeed;
+			break;
+		case '6':
 			prx += prspeed;
 			break;
-		case '9':
+		case '7':
 			pry += prspeed;
 			break;
-		case '0':
+		case '8':
+			pry -= prspeed;
+			break;
+		case '9':
 			prz += prspeed;
+			break;
+		case '0':
+			prz -= prspeed;
 			break;
 
 		case VK_F5:
@@ -789,6 +800,7 @@ void door(float zPos) {
 
 	glPopMatrix();
 }
+
 void houseWindow(float xPos, float yPos, float zPos) {
 	glPushMatrix();
 
@@ -835,6 +847,7 @@ void houseWindow(float xPos, float yPos, float zPos) {
 
 	glPopMatrix();
 }
+
 void lantern(float x, float y, float z) {
 	GLUquadric* sphereObj = gluNewQuadric();
 	glPushMatrix();
@@ -944,6 +957,7 @@ void gardenTable(float x, float y, float z) {
 	glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
 }
+
 void house() {
 	glPushMatrix();
 
@@ -1077,6 +1091,7 @@ void house() {
 
 	glPopMatrix();
 }
+
 void background() {
 	const float PI = 3.14159265f;
 	int numSegments = 20;
@@ -2129,8 +2144,6 @@ void background() {
 	glPopMatrix();
 }
 
-
-
 void weapon() {
 	GLuint handleTexture = 0;
 	GLuint bladeTexture = 0;
@@ -2308,7 +2321,6 @@ void weapon() {
 
 	glPopMatrix();
 }
-
 
 void characterArm(int handIndex) {
 	GLuint textureArr[2];
@@ -3642,18 +3654,25 @@ void lowerBody() {
 	}
 }
 
-
 // Perspective
 void projection() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+	
 	glRotatef(prx, 1, 0, 0);
 	glRotatef(pry, 0, 1, 0);
 	glRotatef(prz, 0, 0, 1);
 	glTranslatef(ptx, pty, ptz);
 	
 	if (isOrtho) {
-		glOrtho(oLeft * zoom, oRight * zoom, oBottom * zoom, oTop * zoom, oNear * zoom, oFar * zoom);
+		glOrtho(
+			oLeft * zoom,   // left
+			oRight * zoom,   // right
+			oBottom * zoom,  // bottom
+			oTop * zoom,   // top
+			-100,            // near - fixed, not zoomed
+			100              // far  - fixed, not zoomed
+		);
 	}
 	else {
 		gluPerspective(45.0, 1.0, 1.0, 100.0);
@@ -3694,8 +3713,17 @@ void display()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	glTranslatef(0.0, -0.5, -4.5 + tz);
+	if (isOrtho)
+	{
+		glTranslatef(0.0, -0.5, 0.0);
+	}
+	else {
+		glTranslatef(0.0, -0.5, -4.5 + tz);
+	}
+	
 	glRotatef(objRot, 0.0, 1.0, 0.0);
+
+	attacking();
 
 	glPushMatrix();
 	glScalef(3, 3, 3);
@@ -3711,11 +3739,11 @@ void display()
 
 	//Character Facing Direction
 	glPushMatrix();
-	glRotatef(character_facing_angle, 0, 1, 0);
+	glTranslatef(mx, my, mz);
 
 	//Character Movement
 	glPushMatrix();
-	glTranslatef(mx, my, mz);
+	glRotatef(character_facing_angle, 0, 1, 0);
 
 	// Upper Body
 	glPushMatrix();
