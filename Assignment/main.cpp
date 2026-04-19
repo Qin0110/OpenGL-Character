@@ -127,10 +127,10 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 			attackRing = 0;
 			break;
 		case VK_UP:
-			pty -= pspeed;
+			pty += pspeed;
 			break;
 		case VK_DOWN:
-			pty += pspeed;
+			pty -= pspeed;
 			break;
 		case VK_LEFT:
 			ptx -= pspeed;
@@ -314,13 +314,13 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 				}
 			}
 			break;
-		case VK_PRIOR:
+		case VK_OEM_PERIOD:
 			if (fingerAngles[selectedHand][selectedFinger][selectedJoint] < 50.0) {
 				fingerAngles[selectedHand][selectedFinger][selectedJoint] += 5.0;
 			}
 			break;
 
-		case VK_NEXT:
+		case VK_OEM_COMMA:
 			if (fingerAngles[selectedHand][selectedFinger][selectedJoint] > 0.0) {
 				fingerAngles[selectedHand][selectedFinger][selectedJoint] -= 5.0;
 			}
