@@ -759,25 +759,33 @@ void door(float zPos) {
 	glEnd();
 
 	// door panels
-	doorTex = loadTexture("door.bmp");
-	glColor3f(1.0f, 1.0f, 1.0f);
+	if (textureOn) {
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, doorTex);
+		glColor3f(1.0f, 1.0f, 1.0f);
+	}
+	else {
+		glDisable(GL_TEXTURE_2D);
+	}
+
 	glBegin(GL_QUADS);
 	// left
 	glNormal3f(0.0f, 0.0f, 1.0f);
-	glColor3f(0.5f, 0.2f, 0.1f);
+	if (!textureOn) glColor3f(0.5f, 0.2f, 0.1f);
 	glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.5f, -2.0f, 0.01f);
 	glTexCoord2f(1.0f, 0.0f); glVertex3f(-0.02f, -2.0f, 0.01f);
 	glTexCoord2f(1.0f, 1.0f); glVertex3f(-0.02f, 1.7f, 0.01f);
 	glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.5f, 1.7f, 0.01f);
 
 	// right
-	glColor3f(0.6f, 0.3f, 0.15f);
+	if (!textureOn) glColor3f(0.6f, 0.3f, 0.15f);
 	glTexCoord2f(1.0f, 0.0f); glVertex3f(0.02f, -2.0f, 0.01f);
 	glTexCoord2f(0.0f, 0.0f); glVertex3f(1.5f, -2.0f, 0.01f);
 	glTexCoord2f(0.0f, 1.0f); glVertex3f(1.5f, 1.7f, 0.01f);
 	glTexCoord2f(1.0f, 1.0f); glVertex3f(0.02f, 1.7f, 0.01f);
 	glEnd();
-	glDeleteTextures(1, &doorTex);
+
+	glDisable(GL_TEXTURE_2D);
 
 	glPopMatrix();
 }
@@ -826,7 +834,8 @@ void houseWindow(float xPos, float yPos, float zPos) {
 	glLineWidth(1.0f);
 
 	glPopMatrix();
-}void lantern(float x, float y, float z) {
+}
+void lantern(float x, float y, float z) {
 	GLUquadric* sphereObj = gluNewQuadric();
 	glPushMatrix();
 	glTranslatef(x, y, z);
