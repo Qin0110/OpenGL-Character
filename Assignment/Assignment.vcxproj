@@ -32,15 +32,19 @@
     <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\test.bmp" />
     <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\wall.bmp" />
     <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\window.bmp" />
+    <Image Include="blue+cloth+fabric-256x256.bmp" />
     <Image Include="brown+fabric-64x64.bmp" />
     <Image Include="circles+pattern+clothing-256x256.bmp" />
+    <Image Include="clear+sea+water-64x64.bmp" />
     <Image Include="cloth+fiber+fabric-512x512.bmp" />
     <Image Include="ice+and+snow+ground-64x64.bmp" />
     <Image Include="metallic+stripes-64x64.bmp" />
+    <Image Include="purple+velvet+cloth-128x128.bmp" />
     <Image Include="red+hot+fire+flames-64x64.bmp" />
     <Image Include="rose-gold-leather-textured-background.bmp" />
     <Image Include="rusty+metal-32x32.bmp" />
     <Image Include="white+cloth+fabric-64x64.bmp" />
+    <Image Include="white+smooth+marble-64x64.bmp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

@@ -115,7 +115,9 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		case VK_ESCAPE:
 			PostQuitMessage(0);
 			break;
-
+		case VK_F8:
+			suitChange = !suitChange;
+			break;
 		case VK_F7:
 			weaponElement = !weaponElement;
 			break;
@@ -2423,7 +2425,15 @@ void characterArm(int handIndex) {
 		// shoulder joint
 		glTranslatef(0.105, 0.105, 0);
 		glRotatef(shoulderAngles[handIndex], 1.0f, 0.0f, 0.0f);
-		textureArr[0] = loadTexture("cloth+fiber+fabric-512x512.bmp");
+		if (!suitChange)
+		{
+			textureArr[0] = loadTexture("cloth+fiber+fabric-512x512.bmp");
+		}
+		else {
+			textureArr[0] = loadTexture("clear+sea+water-64x64.bmp");
+			glColor3f(0.2, 0.2, 0.8);
+		}
+		
 		glColor3f(0.9, 0.9, 0.95);
 		gluSphere(quadric, 0.15, 20, 20);
 		glRotatef(90.0, 1.0, 0.0, 0.0);
@@ -2440,7 +2450,16 @@ void characterArm(int handIndex) {
 		glRotatef(forearmAngles[handIndex], 1.0f, 0.0f, 0.0f);
 		
 		// forearm
-		glColor3f(0.15, 0.15, 0.15);
+		if (!suitChange)
+		{
+			glColor3f(0.15, 0.15, 0.15);
+		}
+		else {
+			glDeleteTextures(1, &textureArr[0]);
+			textureArr[0] = loadTexture("white+smooth+marble-64x64.bmp");
+			glColor3f(0.95, 0.95, 0.95);
+		}
+		
 		gluCylinder(quadric, 0.13, 0.10, 0.5, 30, 30);
 		glTranslatef(0.0, 0.0, 0.5);
 		glDeleteTextures(1, &textureArr[0]);
@@ -2964,7 +2983,14 @@ void character() {
 	glPushMatrix();
 
 	// upper body
-	textureArr[0] = loadTexture("circles+pattern+clothing-256x256.bmp");
+	if (!suitChange)
+	{
+		textureArr[0] = loadTexture("circles+pattern+clothing-256x256.bmp");
+	}
+	else {
+		textureArr[0] = loadTexture("blue+cloth+fabric-256x256.bmp");
+	}
+	
 	glColor3f(0.9, 0.9, 0.95);
 	glPushMatrix();
 	glTranslatef(0.0, 0.0, 0.0);
@@ -2983,7 +3009,16 @@ void character() {
 	glPopMatrix();
 
 	// lower body
-	glColor3f(0.15, 0.15, 0.15);
+	if (!suitChange)
+	{
+		glColor3f(0.15, 0.15, 0.15);
+	}
+	else {
+		glDeleteTextures(1, &textureArr[0]);
+		textureArr[0] = loadTexture("purple+velvet+cloth-128x128.bmp");
+		glColor3f(0.3, 0.3, 0.3);
+	}
+	
 	glPushMatrix();
 	glTranslatef(0.0, -0.4, 0.0);
 	glScalef(1.0, 1.0, 0.65);
@@ -3359,7 +3394,14 @@ void leg() {
 	glEnd();
 	glDeleteTextures(1, &clothTexture);
 
-	glColor3f(0.5, 0, 0);
+	if (!suitChange)
+	{
+		glColor3f(0.5, 0, 0);
+	}
+	else {
+		glColor3f(0, 0, 0.5);
+	}
+	
 	clothTexture = loadTexture("brown+fabric-64x64.bmp");
 	glBegin(GL_QUADS);
 		// Up (viewed from above, CCW)
@@ -3434,7 +3476,14 @@ void leg() {
 
 	// Lower Leg
 	clothTexture = loadTexture("brown+fabric-64x64.bmp");
-	glColor3f(0.2, 0, 0);
+	if (!suitChange)
+	{
+		glColor3f(0.2, 0, 0);
+	}
+	else {
+		glColor3f(0, 0, 0.2);
+	}
+	
 	glPushMatrix();
 	glBegin(GL_QUADS);
 		// Up
@@ -3693,7 +3742,14 @@ void lowerBody() {
 				glPushMatrix();
 
 				glTranslatef(i * 0.5f, j * -0.6, 0.75);
-				glColor3f(1, 1, 0.5);
+				if (!suitChange)
+				{
+					glColor3f(1, 1, 0.5);
+				}
+				else {
+					glColor3f(0.5, 1, 1);
+				}
+				
 				texture = loadTexture("rusty+metal-32x32.bmp");
 				disk(0.5, 0.7);
 				glDeleteTextures(1, &texture);
@@ -3713,7 +3769,13 @@ void lowerBody() {
 				glPushMatrix();
 
 				glTranslatef(i * 0.5f, j * -0.6, 0.75);
-				glColor3f(1, 1, 0.5);
+				if (!suitChange)
+				{
+					glColor3f(1, 1, 0.5);
+				}
+				else {
+					glColor3f(0.5, 1, 1);
+				}
 				texture = loadTexture("rusty+metal-32x32.bmp");
 				disk(0.5, 0.7);
 				glDeleteTextures(1, &texture);
@@ -3733,7 +3795,13 @@ void lowerBody() {
 				glPushMatrix();
 
 				glTranslatef(i * 0.5f, j * -0.6, 0.75);
-				glColor3f(1, 1, 0.5);
+				if (!suitChange)
+				{
+					glColor3f(1, 1, 0.5);
+				}
+				else {
+					glColor3f(0.5, 1, 1);
+				}
 				texture = loadTexture("rusty+metal-32x32.bmp");
 				disk(0.5, 0.7);
 				glDeleteTextures(1, &texture);
