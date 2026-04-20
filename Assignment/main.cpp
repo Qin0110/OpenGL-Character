@@ -18,6 +18,10 @@ struct Raindrop {
 
 Raindrop rain[MAX_DROPS];
 
+// Suit / Customization 
+bool weaponElement = true;
+bool suitChange = true;
+
 float oLeft = -20, oRight = 20, oBottom = -20, oTop = 20, oNear = -50, oFar = 100;
 float ptx = 0, pty = 0, ptz = 0, pspeed = 0.1;
 float p_rotate_angle = 0, p_angle_speed = 10;
@@ -110,6 +114,10 @@ LRESULT WINAPI WindowProcedure(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 		case VK_ESCAPE:
 			PostQuitMessage(0);
+			break;
+
+		case VK_F7:
+			weaponElement = !weaponElement;
 			break;
 		case VK_SHIFT:
 			selectedHand = 1;
@@ -2154,7 +2162,13 @@ void weapon() {
 	glTranslatef(0, 4, 0.1);
 
 	//Lower Blade
-	bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
+	if (weaponElement)
+	{
+		bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
+	}
+	else {
+		bladeTexture = loadTexture("red+hot+fire+flames-64x64.bmp");
+	}
 	glColor3f(1, 1, 1);
 	glPushMatrix();
 	glRotatef(180, 1, 0, 0);
@@ -2164,7 +2178,14 @@ void weapon() {
 	glPopMatrix();
 
 	//Upper Blade
-	bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
+	if (weaponElement)
+	{
+		bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
+	}
+	else {
+		bladeTexture = loadTexture("red+hot+fire+flames-64x64.bmp");
+	}
+	
 	glColor3f(1, 1, 1);
 	glPushMatrix();
 	glScalef(1.5, 3.25, 0.2);
@@ -2183,7 +2204,14 @@ void weapon() {
 	glPushMatrix();
 	glTranslatef(0, 0, 0.1);
 	bladeTexture = loadTexture("metallic+stripes-64x64.bmp");
-	glColor3f(0, 0, 1);
+	if (weaponElement)
+	{
+		glColor3f(0, 0, 1);
+	}
+	else {
+		glColor3f(1, 0, 0);
+	}
+	
 	disk(1.35, 1.45);
 	glDeleteTextures(1, &bladeTexture);
 	glPopMatrix();
@@ -2193,7 +2221,14 @@ void weapon() {
 	glDeleteTextures(1, &bladeTexture);
 	glPushMatrix();
 	glTranslatef(0, 0, 0.1);
-	bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
+	if (weaponElement)
+	{
+		bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
+	}
+	else {
+		bladeTexture = loadTexture("red+hot+fire+flames-64x64.bmp");
+	}
+	
 	glColor3f(1, 1, 1);
 	disk(1.45, 1.65);
 	glDeleteTextures(1, &bladeTexture);
@@ -2203,7 +2238,14 @@ void weapon() {
 
 	//Handle
 	handleTexture = loadTexture("metallic+stripes-64x64.bmp");
-	glColor3f(1, 1, 1);
+	if (weaponElement)
+	{
+		glColor3f(1, 1, 1);
+	}
+	else {
+		glColor3f(0.1, 0.1, 0.1);
+	}
+	
 	glPushMatrix();
 	glTranslatef(0, 3, 0.1);
 	glPushMatrix();
@@ -2236,7 +2278,14 @@ void weapon() {
 	glPushMatrix();
 	glRotatef(-90, 0, 0, 1);
 	glRotatef(90, 0, 1, 0);
-	bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
+	if (weaponElement)
+	{
+		bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
+	}
+	else {
+		bladeTexture = loadTexture("red+hot+fire+flames-64x64.bmp");
+	}
+	
 	cone(0.15, 1);
 	glDeleteTextures(1, &bladeTexture);
 	glPopMatrix();
@@ -2254,7 +2303,13 @@ void weapon() {
 	glPushMatrix();
 	glRotatef(90, 0, 1, 0);
 	jointTexture = loadTexture("metallic+stripes-64x64.bmp");
-	glColor3f(0, 1, 1);
+	if (weaponElement)
+	{
+		glColor3f(0, 1, 1);
+	}
+	else {
+		glColor3f(1, 0.3, 0);
+	}
 	cylinder(0.15, 0.15, 1);
 	glDeleteTextures(1, &jointTexture);
 	
@@ -2269,7 +2324,14 @@ void weapon() {
 	glRotatef(-90, 1, 0, 0);
 	glTranslatef(0, -0.4, 0);
 	glScalef(0.1, 0.8, 0.5);
-	bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
+	if (weaponElement)
+	{
+		bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
+	}
+	else {
+		bladeTexture = loadTexture("red+hot+fire+flames-64x64.bmp");
+	}
+	
 	pyramid();
 	glDeleteTextures(1, &bladeTexture);
 	glPopMatrix();
@@ -2278,7 +2340,14 @@ void weapon() {
 	glRotatef(90, 1, 0, 0);
 	glTranslatef(0, 0.4, 0);
 	glScalef(0.1, 1.25, 0.5);
-	bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
+	if (weaponElement)
+	{
+		bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
+	}
+	else {
+		bladeTexture = loadTexture("red+hot+fire+flames-64x64.bmp");
+	}
+	
 	pyramid();
 	glDeleteTextures(1, &bladeTexture);
 	glPopMatrix();
@@ -2289,7 +2358,14 @@ void weapon() {
 	glPushMatrix();
 	glRotatef(-90, 0, 1, 0);
 	jointTexture = loadTexture("metallic+stripes-64x64.bmp");
-	glColor3f(0, 1, 1);
+	if (weaponElement)
+	{
+		glColor3f(0, 1, 1);
+	}
+	else {
+		glColor3f(1, 0.3, 0);
+	}
+	
 	cylinder(0.15, 0.15, 1);
 	glDeleteTextures(1, &jointTexture);
 	glPushMatrix();
@@ -2303,7 +2379,14 @@ void weapon() {
 	glRotatef(-90, 1, 0, 0);
 	glTranslatef(0, -0.4, 0);
 	glScalef(0.1, 0.8, 0.5);
-	bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
+	if (weaponElement)
+	{
+		bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
+	}
+	else {
+		bladeTexture = loadTexture("red+hot+fire+flames-64x64.bmp");
+	}
+	
 	pyramid();
 	glDeleteTextures(1, &bladeTexture);
 	glPopMatrix();
@@ -2312,7 +2395,14 @@ void weapon() {
 	glRotatef(90, 1, 0, 0);
 	glTranslatef(0, 0.4, 0);
 	glScalef(0.1, 1.25, 0.5);
-	bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
+	if (weaponElement)
+	{
+		bladeTexture = loadTexture("ice+and+snow+ground-64x64.bmp");
+	}
+	else {
+		bladeTexture = loadTexture("red+hot+fire+flames-64x64.bmp");
+	}
+	
 	pyramid();
 	glDeleteTextures(1, &bladeTexture);
 	glPopMatrix();

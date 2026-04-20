@@ -78,6 +78,9 @@
     <Image Include="..\..\Practical 1-20260409T142534Z-3-001\Practical 1\Practical 1\roof.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="red+hot+fire+flames-64x64.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
